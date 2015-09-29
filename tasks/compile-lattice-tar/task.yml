@@ -2,6 +2,7 @@
 platform: linux
 image: docker:///cloudfoundry/lattice-pipeline
 inputs:
+- name: lattice-ci
 - name: lattice
 - name: diego-release
   path: lattice/build/diego-release
@@ -12,6 +13,6 @@ inputs:
 - name: cf-routing-release
   path: lattice/build/cf-routing-release
 run:
-  path: lattice/concourse/tasks/compile-lattice-tar/run.sh
+  path: lattice-ci/tasks/compile-lattice-tar/run.sh
 params:
   RELEASE: false

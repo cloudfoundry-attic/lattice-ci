@@ -194,23 +194,24 @@ jobs:
   - name: compile
     plan:
       - aggregate:
+        - get: lattice-ci
         - get: lattice
           trigger: true
           passed:
-            - go-fmt
-            - unit-test-ltc
-            - unit-test-davtool
-            - unit-test-s3tool
-            - unit-test-tee2metron
+          - go-fmt
+          - unit-test-ltc
+          - unit-test-davtool
+          - unit-test-s3tool
+          - unit-test-tee2metron
         - get: diego-release
         - get: garden-linux-release
         - get: cf-release
         - get: cf-routing-release
       - aggregate:
         - task: compile-lattice-tar
-          file: lattice/concourse/tasks/compile-lattice-tar/task.yml
+          file: lattice-ci/tasks/compile-lattice-tar/task.yml
         - task: compile-ltc
-          file: lattice/concourse/tasks/compile-ltc/task.yml
+          file: lattice-ci/tasks/compile-ltc/task.yml
       - aggregate:
         - put: lattice-tar-build
           params:
