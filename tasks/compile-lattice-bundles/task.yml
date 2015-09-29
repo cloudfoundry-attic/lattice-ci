@@ -2,10 +2,11 @@
 platform: linux
 image: docker:///cloudfoundry/lattice-pipeline
 inputs:
+- name: lattice-ci
 - name: lattice
 - name: generate-terraform-templates
 - name: generate-vagrantfile
 - name: ltc-tar-build
 run:
-  path: lattice/concourse/tasks/compile-lattice-bundles/run.sh
+  path: lattice-ci/tasks/compile-lattice-bundles/run.sh
 

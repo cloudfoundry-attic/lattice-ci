@@ -333,136 +333,138 @@ jobs:
 
   - name: publish-acceptance
     plan:
-      - aggregate:
-        - get: lattice
-          trigger: true
-          passed:
-          - cluster-test-vagrant-aws
-          - cluster-test-terraform-aws
-          - cluster-test-terraform-gce
-        - get: lattice-tar-build
-          passed:
-          - cluster-test-vagrant-aws
-          - cluster-test-terraform-aws
-          - cluster-test-terraform-gce
-        - get: ltc-tar-build
-          passed:
-          - cluster-test-vagrant-aws
-          - cluster-test-terraform-aws
-          - cluster-test-terraform-gce
-      - aggregate:
-        - task: generate-terraform-templates
-          file: lattice/concourse/tasks/generate-terraform-templates/task.yml
-          config:
-            params:
-              LATTICE_URL_BASE: http://lattice.s3.amazonaws.com/acceptance/backend
-        - task: generate-vagrantfile
-          file: lattice/concourse/tasks/generate-vagrantfile/task.yml
-          config:
-            params:
-              LATTICE_URL_BASE: http://lattice.s3.amazonaws.com/acceptance/backend
-      - task: compile-lattice-bundles
-        file: lattice/concourse/tasks/compile-lattice-bundles/task.yml
-      - aggregate:
-        - put: lattice-tar-acceptance
+    - aggregate:
+      - get: lattice-ci
+      - get: lattice
+        trigger: true
+        passed:
+        - cluster-test-vagrant-aws
+        - cluster-test-terraform-aws
+        - cluster-test-terraform-gce
+      - get: lattice-tar-build
+        passed:
+        - cluster-test-vagrant-aws
+        - cluster-test-terraform-aws
+        - cluster-test-terraform-gce
+      - get: ltc-tar-build
+        passed:
+        - cluster-test-vagrant-aws
+        - cluster-test-terraform-aws
+        - cluster-test-terraform-gce
+    - aggregate:
+      - task: generate-terraform-templates
+        file: lattice-ci/tasks/generate-terraform-templates/task.yml
+        config:
           params:
-            from: lattice-tar-build/lattice-v(.*).tgz
-            to: /acceptance/backend/
-        - do:
-          - put: lattice-bundle-acceptance
-            params:
-              from: compile-lattice-bundles/lattice-bundle-v(.*)-linux.zip
-              to: /acceptance/
-          - put: lattice-bundle-acceptance
-            params:
-              from: compile-lattice-bundles/lattice-bundle-v(.*)-osx.zip
-              to: /acceptance/
-      - put: lattice-tracker
+            LATTICE_URL_BASE: http://lattice.s3.amazonaws.com/acceptance/backend
+      - task: generate-vagrantfile
+        file: lattice-ci/tasks/generate-vagrantfile/task.yml
+        config:
+          params:
+            LATTICE_URL_BASE: http://lattice.s3.amazonaws.com/acceptance/backend
+    - task: compile-lattice-bundles
+      file: lattice-ci/tasks/compile-lattice-bundles/task.yml
+    - aggregate:
+      - put: lattice-tar-acceptance
         params:
-          comment: lattice-bundle-acceptance/url
-          repos: [lattice]
+          from: lattice-tar-build/lattice-v(.*).tgz
+          to: /acceptance/backend/
+      - do:
+        - put: lattice-bundle-acceptance
+          params:
+            from: compile-lattice-bundles/lattice-bundle-v(.*)-linux.zip
+            to: /acceptance/
+        - put: lattice-bundle-acceptance
+          params:
+            from: compile-lattice-bundles/lattice-bundle-v(.*)-osx.zip
+            to: /acceptance/
+    - put: lattice-tracker
+      params:
+        comment: lattice-bundle-acceptance/url
+        repos: [lattice]
 
   - name: publish-nightly
     plan:
-      - get: publish-nightly-timer
-        trigger: true
-      - aggregate:
-        - get: lattice
-          passed:
-          - cluster-test-vagrant-aws
-          - cluster-test-terraform-aws
-          - cluster-test-terraform-gce
-        - get: lattice-tar-build
-          passed:
-          - cluster-test-vagrant-aws
-          - cluster-test-terraform-aws
-          - cluster-test-terraform-gce
-        - get: ltc-tar-build
-          passed:
-          - cluster-test-vagrant-aws
-          - cluster-test-terraform-aws
-          - cluster-test-terraform-gce
-      - aggregate:
-        - task: generate-terraform-templates
-          file: lattice/concourse/tasks/generate-terraform-templates/task.yml
-          config:
-            params:
-              LATTICE_URL_BASE: http://lattice.s3.amazonaws.com/nightly/backend
-        - task: generate-vagrantfile
-          file: lattice/concourse/tasks/generate-vagrantfile/task.yml
-          config:
-            params:
-              LATTICE_URL_BASE: http://lattice.s3.amazonaws.com/nightly/backend
-      - task: compile-lattice-bundles
-        file: lattice/concourse/tasks/compile-lattice-bundles/task.yml
-      - aggregate:
-        - put: lattice-tar-nightly
-          params:
-            from: lattice-tar-build/lattice-v(.*).tgz
-            to: /nightly/backend/
-        - put: lattice-tar-nightly
-          params:
-            from: lattice-tar-build/lattice-v(.*).tgz
-            to: /nightly/backend/lattice-latest.tgz
-        - put: lattice-bundle-nightly
-          params:
-            from: compile-lattice-bundles/lattice-bundle-v(.*)-linux.zip
-            to: /nightly/
-        - put: lattice-bundle-nightly
-          params:
-            from: compile-lattice-bundles/lattice-bundle-v(.*)-linux.zip
-            to: /nightly/lattice-bundle-latest-linux.zip
-        - put: lattice-bundle-nightly
-          params:
-            from: compile-lattice-bundles/lattice-bundle-v(.*)-osx.zip
-            to: /nightly/
-        - put: lattice-bundle-nightly
-          params:
-            from: compile-lattice-bundles/lattice-bundle-v(.*)-osx.zip
-            to: /nightly/lattice-bundle-latest-osx.zip
-      - task: generate-lattice-bundle-listing
-        file: lattice/concourse/tasks/generate-lattice-bundle-listing/task.yml
+    - get: publish-nightly-timer
+      trigger: true
+    - aggregate:
+      - get: lattice-ci
+      - get: lattice
+        passed:
+        - cluster-test-vagrant-aws
+        - cluster-test-terraform-aws
+        - cluster-test-terraform-gce
+      - get: lattice-tar-build
+        passed:
+        - cluster-test-vagrant-aws
+        - cluster-test-terraform-aws
+        - cluster-test-terraform-gce
+      - get: ltc-tar-build
+        passed:
+        - cluster-test-vagrant-aws
+        - cluster-test-terraform-aws
+        - cluster-test-terraform-gce
+    - aggregate:
+      - task: generate-terraform-templates
+        file: lattice-ci/tasks/generate-terraform-templates/task.yml
         config:
           params:
-            AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
-            AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
+            LATTICE_URL_BASE: http://lattice.s3.amazonaws.com/nightly/backend
+      - task: generate-vagrantfile
+        file: lattice-ci/tasks/generate-vagrantfile/task.yml
+        config:
+          params:
+            LATTICE_URL_BASE: http://lattice.s3.amazonaws.com/nightly/backend
+    - task: compile-lattice-bundles
+      file: lattice-ci/tasks/compile-lattice-bundles/task.yml
+    - aggregate:
+      - put: lattice-tar-nightly
+        params:
+          from: lattice-tar-build/lattice-v(.*).tgz
+          to: /nightly/backend/
+      - put: lattice-tar-nightly
+        params:
+          from: lattice-tar-build/lattice-v(.*).tgz
+          to: /nightly/backend/lattice-latest.tgz
+      - put: lattice-bundle-nightly
+        params:
+          from: compile-lattice-bundles/lattice-bundle-v(.*)-linux.zip
+          to: /nightly/
+      - put: lattice-bundle-nightly
+        params:
+          from: compile-lattice-bundles/lattice-bundle-v(.*)-linux.zip
+          to: /nightly/lattice-bundle-latest-linux.zip
+      - put: lattice-bundle-nightly
+        params:
+          from: compile-lattice-bundles/lattice-bundle-v(.*)-osx.zip
+          to: /nightly/
+      - put: lattice-bundle-nightly
+        params:
+          from: compile-lattice-bundles/lattice-bundle-v(.*)-osx.zip
+          to: /nightly/lattice-bundle-latest-osx.zip
+    - task: generate-lattice-bundle-listing
+      file: lattice-ci/tasks/generate-lattice-bundle-listing/task.yml
+      config:
+        params:
+          AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
+          AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
 
   - name: docker-push-lattice-pipeline
     plan:
-      - get: lattice
-        resource: lattice-pipeline-image-changes
-        trigger: true
-      - put: lattice-pipeline-image
-        params:
-          build: lattice/images/lattice-pipeline
-          push: true
+    - get: lattice
+      resource: lattice-pipeline-image-changes
+      trigger: true
+    - put: lattice-pipeline-image
+      params:
+        build: lattice/images/lattice-pipeline
+        push: true
 
   - name: docker-push-lattice-bosh
     plan:
-      - get: lattice
-        resource: lattice-bosh-image-changes
-        trigger: true
-      - put: lattice-bosh-image
-        params:
-          build: lattice/images/lattice-bosh
-          push: true
+    - get: lattice
+      resource: lattice-bosh-image-changes
+      trigger: true
+    - put: lattice-bosh-image
+      params:
+        build: lattice/images/lattice-bosh
+        push: true
