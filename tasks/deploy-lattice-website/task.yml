@@ -1,0 +1,9 @@
+---
+platform: linux
+image: docker:///cloudfoundry/lattice-pipeline
+inputs:
+- name: lattice-ci
+- name: lattice-website
+run:
+  path: lattice-ci/tasks/deploy-lattice-website/run.sh
+

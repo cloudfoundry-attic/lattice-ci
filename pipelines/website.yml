@@ -1,0 +1,26 @@
+---
+resources:
+  - name: lattice-ci
+    type: git
+    source:
+      uri: https://github.com/cloudfoundry-incubator/lattice-ci.git
+      branch: master
+  - name: lattice-website
+    type: git
+    source:
+      uri: git@github.com:pivotal-cf-experimental/lattice-website
+      branch: master
+      private_key: {{github-ssh-key}}
+
+jobs:
+  - name: deploy-lattice-website
+    plan:
+    - aggregate:
+      - get: lattice-ci
+      - get: lattice-website
+    - task: deploy-lattice-website
+      file: lattice-ci/tasks/deploy-lattice-website/task.yml
+      config:
+        params:
+          GITHUB_PRIVATE_KEY: {{github-ssh-key}}
+
