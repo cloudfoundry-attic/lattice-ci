@@ -2,9 +2,10 @@
 platform: linux
 image: docker:///cloudfoundry/lattice-pipeline
 inputs:
+- name: lattice-ci
 - name: lattice
 run:
-  path: lattice/concourse/tasks/go-fmt/run.sh
+  path: lattice-ci/tasks/go-fmt/run.sh
 params:
   GO_FMT_PATH: some-path-to-go-fmt
 

@@ -2,8 +2,9 @@
 platform: linux
 image: docker:///cloudfoundry/lattice-pipeline
 inputs:
+- name: lattice-ci
 - name: lattice
 run:
-  path: lattice/concourse/tasks/unit-test-cell-helper/run.sh
+  path: lattice-ci/tasks/unit-test-cell-helper/run.sh
 params:
   CELL_HELPER: some-cell-helper
