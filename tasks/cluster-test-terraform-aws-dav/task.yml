@@ -2,8 +2,9 @@
 platform: linux
 image: docker:///cloudfoundry/lattice-pipeline
 inputs:
+- name: lattice-ci
 - name: lattice
 - name: ltc-tar-build
 - name: deploy-terraform-aws
 run:
-  path: lattice/concourse/tasks/cluster-test-terraform-aws-dav/run.sh
+  path: lattice-ci/tasks/cluster-test-terraform-aws-dav/run.sh
