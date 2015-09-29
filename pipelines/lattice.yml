@@ -1,4 +1,9 @@
 resources:
+  - name: lattice-ci
+    type: git
+    source:
+      uri: https://github.com/cloudfoundry-incubator/lattice-ci.git
+      branch: master
   - name: lattice
     type: git
     source:
@@ -115,8 +120,10 @@ resources:
 jobs:
   - name: unit-test-ltc
     plan:
-      - get: lattice
-        trigger: true
+      - aggregate:
+        - get: lattice-ci
+        - get: lattice
+          trigger: true
       - task: unit-test-ltc
         file: lattice/concourse/tasks/unit-test-ltc/task.yml
 

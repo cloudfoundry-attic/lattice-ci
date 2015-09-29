@@ -3,6 +3,7 @@ platform: linux
 image: docker:///cloudfoundry/lattice-pipeline
 inputs:
 - name: lattice
+- name: lattice-ci
 run:
-  path: lattice/concourse/tasks/unit-test-ltc/run.sh
+  path: lattice-ci/tasks/unit-test-ltc/run.sh
 
