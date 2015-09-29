@@ -2,9 +2,10 @@
 platform: linux
 image: docker:///cloudfoundry/lattice-bosh
 inputs:
+- name: lattice-ci
 - name: lattice
 run:
-  path: lattice/concourse/tasks/deploy-bosh/run.sh
+  path: lattice-ci/tasks/deploy-bosh/run.sh
 params:
   AWS_DEFAULT_REGION: some-region
   AWS_ACCESS_KEY_ID: some-access-key-id
