@@ -1,0 +1,9 @@
+---
+platform: linux
+image: docker:///cloudfoundry/lattice-pipeline
+inputs:
+- name: lattice-ci
+- name: lattice-release
+run:
+  path: lattice-ci/tasks/build-ltc-tar/run.sh
+

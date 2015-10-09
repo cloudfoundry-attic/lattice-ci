@@ -1,0 +1,73 @@
+resources:
+  - name: lattice-ci
+    type: git
+    source:
+      uri: https://github.com/cloudfoundry-incubator/lattice-ci.git
+      branch: master
+  - name: lattice-release
+    type: git
+    source:
+      uri: git@github.com:sclevine/lattice-release.git
+      branch: master
+      private_key: {{github-ssh-key}}
+  - name: lattice-aws-box
+    type: s3
+    source:
+      bucket: lattice
+      region_name: us-west-2
+      regexp: development/lattice-aws-v(.*).box
+      private: true
+      access_key_id: {{aws-access-key-id}}
+      secret_access_key: {{aws-secret-access-key}}
+  - name: lattice-tgz
+    type: s3
+    source:
+      bucket: lattice
+      region_name: us-west-2
+      regexp: development/lattice-v(.*).tgz
+      private: true
+      access_key_id: {{aws-access-key-id}}
+      secret_access_key: {{aws-secret-access-key}}
+
+
+jobs:
+  - name: build-vagrant-aws
+    plan:
+      - aggregate:
+        - get: lattice-ci
+        - get: lattice-release
+          trigger: true
+          params:
+            submodules: all
+      - task: packer-build
+        file: lattice-ci/tasks/packer-build/task.yml
+        config:
+          params:
+            BUILDER: amazon-ebs
+
+  - name: build-lattice-tar
+    plan:
+      - aggregate:
+        - get: lattice-ci
+        - get: lattice-release
+          trigger: true
+          params:
+            submodules: all
+      - task: build-lattice-tar
+        file: lattice-ci/tasks/build-lattice-tar/task.yml
+      - put: lattice-tgz
+        params:
+          from: lattice-release/lattice.tgz
+          to: /development/
+
+  - name: build-ltc-tar
+    plan:
+      - aggregate:
+        - get: lattice-ci
+        - get: lattice-release
+          trigger: true
+          params:
+            submodules: all
+      - task: build-ltc-tar
+        file: lattice-ci/tasks/build-ltc-tar/task.yml
+
