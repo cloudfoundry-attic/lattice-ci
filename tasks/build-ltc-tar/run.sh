@@ -1,6 +1,8 @@
 #!/bin/bash
 
+ltc_version=$(git -C lattice-release/src/github.com/cloudfoundry-incubator/lattice/ltc describe --tags --always)
+
 pushd lattice-release
   go install github.com/cloudfoundry-incubator/lattice/ltc
-  tar czf ltc.tgz -C bin/ ./ltc
+  tar czf "ltc-v${ltc_version}.tgz" -C bin/ ./ltc
 popd
