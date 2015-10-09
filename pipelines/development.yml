@@ -10,12 +10,12 @@ resources:
       uri: git@github.com:sclevine/lattice-release.git
       branch: master
       private_key: {{github-ssh-key}}
-  - name: lattice-boxes
+  - name: vagrant-boxes
     type: s3
     source:
       bucket: lattice
       region_name: us-west-2
-      regexp: development/lattice-boxes-v(.*).box
+      regexp: development/vagrant-boxes-v(.*).box
       private: true
       access_key_id: {{aws-access-key-id}}
       secret_access_key: {{aws-secret-access-key}}
@@ -40,7 +40,7 @@ resources:
 
 
 jobs:
-  - name: build-vagrant-aws
+  - name: build-vagrant-boxes
     plan:
       - aggregate:
         - get: lattice-ci
@@ -48,11 +48,11 @@ jobs:
           trigger: true
           params:
             submodules: all
-      - task: packer-build
-        file: lattice-ci/tasks/packer-build/task.yml
-      - put: lattice-boxes
+      - task: vagrant-packer-build
+        file: lattice-ci/tasks/vagrant-packer-build/task.yml
+      - put: vagrant-boxes
         params:
-          from: lattice-release/lattice-boxes-v(.*).tgz
+          from: lattice-release/vagrant/vagrant-boxes-v(.*).tgz
           to: /development/
 
   - name: build-lattice-tar
@@ -84,4 +84,22 @@ jobs:
         params:
           from: lattice-release/ltc-v(.*).tgz
           to: /development/
+
+  - name: cluster-test-vagrant-aws
+    plan:
+    - aggregate:
+      - get: lattice-tgz
+        trigger: true
+      - get: ltc-tgz
+        trigger: true
+      - get: vagrant-boxes
+        trigger: true
+        passed: [build-vagrant-boxes]
+    - task: deploy-vagrant-aws-box
+      file: lattice-ci/tasks/deploy-vagrant-aws-box/task.yml
+      config:
+        params:
+          AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
+          AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
+          AWS_SSH_PRIVATE_KEY: {{aws-ssh-private-key}}
 
