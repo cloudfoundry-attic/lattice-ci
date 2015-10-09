@@ -5,5 +5,5 @@ export GOPATH=$(cd lattice-release && pwd)
 
 pushd lattice-release
   go install github.com/cloudfoundry-incubator/lattice/ltc
-  tar czf "ltc-v${ltc_version}.tgz" -C bin/ ./ltc
+  tar czf "ltc-${ltc_version}.tgz" -C bin/ ./ltc
 popd
