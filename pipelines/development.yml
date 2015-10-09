@@ -10,12 +10,12 @@ resources:
       uri: git@github.com:sclevine/lattice-release.git
       branch: master
       private_key: {{github-ssh-key}}
-  - name: lattice-aws-box
+  - name: lattice-boxes
     type: s3
     source:
       bucket: lattice
       region_name: us-west-2
-      regexp: development/lattice-aws-v(.*).box
+      regexp: development/lattice-boxes-v(.*).box
       private: true
       access_key_id: {{aws-access-key-id}}
       secret_access_key: {{aws-secret-access-key}}
@@ -50,9 +50,10 @@ jobs:
             submodules: all
       - task: packer-build
         file: lattice-ci/tasks/packer-build/task.yml
-        config:
-          params:
-            BUILDER: amazon-ebs
+      - put: lattice-boxes
+        params:
+          from: lattice-release/lattice-boxes-v(.*).tgz
+          to: /development/
 
   - name: build-lattice-tar
     plan:

@@ -6,6 +6,4 @@ inputs:
 - name: lattice-release
 run:
   path: lattice-ci/tasks/vagrant-packer-build/run.sh
-params:
-  BUILDER: some-builders
 
