@@ -1,5 +1,6 @@
 #!/bin/bash
-lattice_release_version=$(git describe -C ./lattice-release --tags --always)
+lattice_release_version=$(git -C ./lattice-release describe --tags --always)
+export GOPATH=$(cd ./lattice-release && pwd)
 
 pushd ./lattice-release/vagrant
   ./build
