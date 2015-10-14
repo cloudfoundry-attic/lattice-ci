@@ -11,7 +11,7 @@ S3_BUCKET = 'lattice'
 
 objs_by_day = {}
 service.buckets.find(S3_BUCKET).objects.each do |obj|
-	next if !obj.key.start_with?('nightly/lattice-bundle') 
+	next if !obj.key.start_with?('nightly/lattice-bundle')
 	next if obj.key.start_with?('nightly/lattice-bundle-latest-')
 
 	version = /lattice-bundle-(.+?)-[^-]+\.zip$/.match(obj.key)[1]
@@ -33,4 +33,4 @@ nightly_bundle_listing.content = erb.result(binding_from_hash({:days => objs_by_
 nightly_bundle_listing.content_type = "text/html"
 nightly_bundle_listing.save
 
-print "uploaded nightly bundle listing"
+print "Uploaded nightly bundle listing."

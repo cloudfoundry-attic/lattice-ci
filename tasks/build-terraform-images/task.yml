@@ -1,0 +1,12 @@
+---
+platform: linux
+image: docker:///cloudfoundry/lattice-ci
+inputs:
+- name: lattice-ci
+- name: lattice-release
+run:
+  path: lattice-ci/tasks/build-vagrant-images/run.sh
+params:
+  NAMES: amazon-ebs,virtualbox-iso,vmware-iso
+  VERSION_FILE: some-version-file
+

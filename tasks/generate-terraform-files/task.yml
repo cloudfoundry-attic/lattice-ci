@@ -7,5 +7,7 @@ inputs:
 run:
   path: lattice-ci/tasks/generate-terraform-templates/run.sh
 params:
-  RELEASE: false
   LATTICE_URL_BASE: some-url-base
+  PROVIDER: some-provider
+  VERSION_FILE:
+

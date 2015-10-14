@@ -2,28 +2,21 @@
 
 set -ex
 
-LATTICE_DIR=$PWD/lattice
+vagrant_dir=$PWD/vagrant
+mkdir -p $vagrant_dir
 
-export AWS_SSH_PRIVATE_KEY_PATH=$PWD/vagrant.pem
-export AWS_INSTANCE_NAME=concourse-vagrant
+aws_ssh_private_key_path=$PWD/vagrant.pem
+aws_instance_name=ci-vagrant-aws
 
-cat <<< "$AWS_SSH_PRIVATE_KEY" > "$AWS_SSH_PRIVATE_KEY_PATH"
+echo "$AWS_SSH_PRIVATE_KEY" > "$aws_ssh_private_key_path"
 
-curl -LO https://dl.bintray.com/mitchellh/vagrant/vagrant_1.7.4_x86_64.deb
-dpkg -i vagrant_1.7.4_x86_64.deb
 
-while ! vagrant plugin install vagrant-aws; do
-  sleep 5
-done
+cp lattice-tgz/lattice-*.tgz $vagrant_dir/lattice.tgz
+cp lattice-release/vagrant/Vagrantfile $vagrant_dir/Vagrantfile
 
-vagrant box add lattice/ubuntu-trusty-64 --provider=aws
-
-cp lattice-tar-build/lattice-*.tgz $LATTICE_DIR/lattice.tgz
-pushd $LATTICE_DIR
+pushd $vagrant_dir >/dev/null
   vagrant up --provider=aws
-  export $(vagrant ssh -c "grep SYSTEM_DOMAIN /var/lattice/setup/lattice-environment" | egrep -o '(SYSTEM_DOMAIN=.+\.io)')
-popd
+  export $(vagrant ssh -c "grep '^DOMAIN=' /var/lattice/setup" 2>/dev/null)
+popd >/dev/null
 
-sleep 120
-
-echo $SYSTEM_DOMAIN > system_domain
+echo $DOMAIN > domain

@@ -2,13 +2,15 @@
 
 set -ex
 
-LATTICE_DIR=$PWD/lattice
-LATTICE_VERSION=$(git -C $LATTICE_DIR describe --tags --always)
+version=$([[ -f $VERSION_FILE ]] && cat $VERSION_FILE)
+lattice_release_version=${version:-$(git -C lattice-release describe --tags --always)}
+lattice_tgz_url="$LATTICE_URL_BASE/lattice-$lattice_release_version.tgz"
 
-if [ "$RELEASE" = true ]; then
-  LATTICE_VERSION=$(cat $LATTICE_DIR/Version)
-fi
+output_dir=lattice-vagrant-$lattice_release_version
+mkdir -p $output_dir
 
-LATTICE_URL="${LATTICE_URL_BASE}/lattice-${LATTICE_VERSION}.tgz"
+( echo "LATTICE_TGZ_URL = '$lattice_tgz_url'"; cat lattice-release/vagrant/Vagrantfile ) > $output_dir/Vagrantfile
 
-( echo "LATTICE_URL = '${LATTICE_URL}'"; cat $LATTICE_DIR/Vagrantfile ) > Vagrantfile
+zip -r $output_dir.zip $output_dir
+
+
