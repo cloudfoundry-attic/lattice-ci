@@ -4,7 +4,7 @@ image: docker:///cloudfoundry/lattice-ci
 inputs:
 - name: lattice-ci
 - name: lattice-release
-- name: vagrant-images-changes
+- name: vagrant-image-changes
 - name: current-vagrant-box-version
 - name: next-vagrant-box-version
 - name: vagrant-box-commit

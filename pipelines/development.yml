@@ -3,7 +3,7 @@ resources:
     type: git
     source:
       uri: https://github.com/cloudfoundry-incubator/lattice-ci.git
-      branch: master
+      branch: ci-updates
   - name: lattice-release
     type: git
     source:
@@ -19,6 +19,7 @@ resources:
       ignore_paths: [vagrant/Vagrantfile]
       paths:
         - vagrant
+        - bosh
         - diego-release
         - garden-linux-release
         - cf-routing-release
@@ -33,6 +34,7 @@ resources:
       ignore_paths: [terraform/aws]
       paths:
         - terraform
+        - bosh
         - diego-release
         - garden-linux-release
         - cf-routing-release
@@ -70,6 +72,15 @@ resources:
       bucket: lattice
       region_name: us-west-2
       regexp: terraform/ami-metadata-v(.*)
+      private: true
+      access_key_id: {{aws-access-key-id}}
+      secret_access_key: {{aws-secret-access-key}}
+  - name: terraform-ami-commit
+    type: s3
+    source:
+      bucket: lattice
+      region_name: us-west-2
+      regexp: terraform/ami-commit-v(.*)
       private: true
       access_key_id: {{aws-access-key-id}}
       secret_access_key: {{aws-secret-access-key}}
@@ -121,7 +132,7 @@ resources:
       interval: 1h
 
 jobs:
-  - name: build-vagrant-images
+  - name: build-images
     serial: true
     plan:
     - aggregate:
@@ -131,6 +142,9 @@ jobs:
       - get: vagrant-image-changes
         params:
           submodules: all
+      - get: terraform-image-changes
+        params:
+          submodules: all
       - get: vagrant-box-commit
       - get: current-vagrant-box-version
         resource: vagrant-box-version
@@ -138,18 +152,43 @@ jobs:
         resource: vagrant-box-version
         params:
           bump: minor
-    - task: build-vagrant-images
-      file: lattice-ci/tasks/build-vagrant-images/task.yml
-      config:
+      - get: terraform-ami-commit
+      - get: current-terraform-ami-version
+        resource: terraform-ami-version
+      - get: next-terraform-ami-version
+        resource: terraform-ami-version
         params:
-          ATLAS_TOKEN: {{atlas-api-token}}
+          bump: minor
+    - aggregate:
+      - task: build-vagrant-images
+        file: lattice-ci/tasks/build-vagrant-images/task.yml
+        config:
+          params:
+            atlas_token: {{atlas-api-token}}
+      - task: build-terraform-images
+        file: lattice-ci/tasks/build-terraform-images/task.yml
+        config:
+          params:
+            AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
+            AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
     - put: vagrant-box-commit
       params:
         from: build-vagrant-images/box-commit-v(.*)
         to: /vagrant/
-    - put: current-vagrant-box-version
+    - put: vagrant-box-version
       params:
-        file: next-vagrant-box-version/number
+        file: updated-vagrant-box-version/number
+    - put: terraform-ami-metadata
+      params:
+        from: build-terraform-images/ami-metadata-v(.*)
+        to: /terraform/
+    - put: terraform-ami-commit
+      params:
+        from: build-terraform-images/ami-commit-v(.*)
+        to: /terraform/
+    - put: terraform-ami-version
+      params:
+        file: updated-terraform-ami-version/number
 
   - name: unit-test-ltc
     plan:
@@ -159,9 +198,11 @@ jobs:
         trigger: true
         params:
           submodules: all
-        passed: [build-vagrant-images]
+        passed: [build-images]
       - get: vagrant-box-version
-        passed: [build-vagrant-images]
+        passed: [build-images]
+      - get: terraform-ami-metadata
+        passed: [build-images]
     - task: unit-test
       file: lattice-ci/tasks/unit-test/task.yml
       config:
@@ -176,9 +217,11 @@ jobs:
         trigger: true
         params:
           submodules: all
-        passed: [build-vagrant-images]
+        passed: [build-images]
       - get: vagrant-box-version
-        passed: [build-vagrant-images]
+        passed: [build-images]
+      - get: terraform-ami-metadata
+        passed: [build-images]
     - task: unit-test
       file: lattice-ci/tasks/unit-test/task.yml
       config:
@@ -194,7 +237,9 @@ jobs:
         params:
           submodules: [src/github.com/cloudfoundry-incubator/lattice]
       - get: vagrant-box-version
-        passed: [build-vagrant-images]
+        passed: [build-images]
+      - get: terraform-ami-metadata
+        passed: [build-images]
     - task: unit-test
       file: lattice-ci/tasks/gofmt/task.yml
       config:
@@ -218,6 +263,11 @@ jobs:
         - unit-test-ltc
         - unit-test-cell-helpers
         - gofmt
+      - get: terraform-ami-metadata
+        passed:
+        - unit-test-ltc
+        - unit-test-cell-helpers
+        - gofmt
     - task: compile-lattice-tgz
       file: lattice-ci/tasks/compile-lattice-tgz/task.yml
     - put: lattice-tgz
@@ -236,6 +286,8 @@ jobs:
         passed: [compile-lattice-tgz]
       - get: vagrant-box-version
         passed: [compile-lattice-tgz]
+      - get: terraform-ami-metadata
+        passed: [compile-lattice-tgz]
     - task: build-bundle
       file: lattice-ci/tasks/build-bundle/task.yml
     - put: lattice-bundle-ci
@@ -243,22 +295,22 @@ jobs:
         from: build-bundle/lattice-bundle-v(.*).zip
         to: /ci/
 
-  - name: cluster-test-vagrant-aws
-    plan:
-    - aggregate:
-      - get: lattice-ci
-      - get: lattice-release
-        trigger: true
-        passed: [compile-lattice-tgz]
-      - get: lattice-tgz
-        passed: [compile-lattice-tgz]
-      - get: vagrant-box-version
-        passed: [compile-lattice-tgz]
-    - task: deploy-vagrant-aws-box
-      file: lattice-ci/tasks/deploy-vagrant-aws-box/task.yml
-      config:
-        params:
-          AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
-          AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
-          AWS_SSH_PRIVATE_KEY: {{aws-ssh-private-key}}
+  #- name: cluster-test-vagrant-aws
+    #plan:
+    #- aggregate:
+      #- get: lattice-ci
+      #- get: lattice-release
+        #trigger: true
+        #passed: [compile-lattice-tgz]
+      #- get: lattice-tgz
+        #passed: [compile-lattice-tgz]
+      #- get: vagrant-box-version
+        #passed: [compile-lattice-tgz]
+    #- task: deploy-vagrant-aws-box
+      #file: lattice-ci/tasks/deploy-vagrant-aws-box/task.yml
+      #config:
+        #params:
+          #AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
+          #AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
+          #AWS_SSH_PRIVATE_KEY: {{aws-ssh-private-key}}
 
