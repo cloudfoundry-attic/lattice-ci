@@ -12,6 +12,10 @@ if [[ $current_ami_commit == $next_ami_commit ]]; then
   exit 0
 fi
 
+pushd terraform-image-changes > /dev/null
+  git submodule update --init --recursive
+popd > /dev/null
+
 terraform-image-changes/terraform/build -machine-readable -var "version=$next_version" | tee build.log
 
 tail -50 build.log | ./lattice-ci/tasks/build-terraform-images/parse-build-output.rb > ami-metadata-v${next_version}.tf.json

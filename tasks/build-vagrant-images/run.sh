@@ -33,9 +33,9 @@ EOF)
 
 echo $lattice_json | jq '. + '"$post_processor_json" > vagrant-image-changes/vagrant/lattice.json
 
-pushd vagrant-image-changes
-  git submodule update --init
-popd
+pushd vagrant-image-changes > /dev/null
+  git submodule update --init --recursive
+popd > /dev/null
 
 vagrant-image-changes/vagrant/build -var "version=$next_version" -only=$NAMES
 echo $next_box_commit > "box-commit-v$next_version"
