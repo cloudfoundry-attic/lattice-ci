@@ -1,10 +1,8 @@
 ---
 platform: linux
-image: docker:///cloudfoundry/lattice-pipeline
+image: docker:///cloudfoundry/lattice-ci
 inputs:
 - name: lattice-ci
-- name: lattice
-- name: ltc-tar-build
 - name: deploy-vagrant-aws
 run:
   path: lattice-ci/tasks/cluster-test-vagrant-aws-dav/run.sh

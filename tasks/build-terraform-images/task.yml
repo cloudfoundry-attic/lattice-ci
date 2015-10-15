@@ -4,9 +4,14 @@ image: docker:///cloudfoundry/lattice-ci
 inputs:
 - name: lattice-ci
 - name: lattice-release
+- name: terraform-image-changes
+- name: current-terraform-ami-version
+- name: next-terraform-ami-version
+- name: terraform-ami-commit
 run:
-  path: lattice-ci/tasks/build-vagrant-images/run.sh
+  path: lattice-ci/tasks/build-terraform-images/run.sh
 params:
-  NAMES: amazon-ebs,virtualbox-iso,vmware-iso
-  VERSION_FILE: some-version-file
+  AWS_ACCESS_KEY_ID: some-aws-access-key-id
+  AWS_SECRET_ACCESS_KEY: some-aws-secret-access-key
+  
 
