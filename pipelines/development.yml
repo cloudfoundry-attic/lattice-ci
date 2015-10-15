@@ -177,7 +177,7 @@ jobs:
         to: /vagrant/
     - put: vagrant-box-version
       params:
-        file: updated-vagrant-box-version/number
+        file: build-vagrant-images/box-version-number
     - put: terraform-ami-metadata
       params:
         from: build-terraform-images/ami-metadata-v(.*)
@@ -188,7 +188,7 @@ jobs:
         to: /terraform/
     - put: terraform-ami-version
       params:
-        file: updated-terraform-ami-version/number
+        file: build-terraform-images/ami-version-number
 
   - name: unit-test-ltc
     plan:
