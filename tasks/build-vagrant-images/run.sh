@@ -33,7 +33,8 @@ EOF)
 
 echo $lattice_json | jq '. + '"$post_processor_json" > vagrant-image-changes/vagrant/lattice.json
 
-ssh-keyscan github.com >> ~/.ssh/known_hosts
+mkdir -p $HOME/.ssh
+ssh-keyscan github.com >> $HOME/.ssh/known_hosts
 pushd vagrant-image-changes > /dev/null
   git submodule update --init --recursive
 popd > /dev/null
