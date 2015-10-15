@@ -5,7 +5,7 @@ inputs:
 - name: lattice-ci
 - name: lattice-release
 run:
-  path: lattice-ci/tasks/generate-vagrantfile/run.sh
+  path: lattice-ci/tasks/gofmt/run.sh
 params:
-  LATTICE_URL_BASE: some-url-base
-  VERSION_FILE:
+  PACKAGE: some-package
+

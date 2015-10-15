@@ -10,91 +10,250 @@ resources:
       uri: git@github.com:sclevine/lattice-release.git
       branch: master
       private_key: {{github-ssh-key}}
-  - name: vagrant-boxes
+  - name: vagrant-image-changes
+    type: git
+    source:
+      uri: git@github.com:sclevine/lattice-release.git
+      branch: master
+      private_key: {{github-ssh-key}}
+      ignore_paths: [vagrant/Vagrantfile]
+      paths:
+        - vagrant
+        - diego-release
+        - garden-linux-release
+        - cf-routing-release
+        - cf-release
+        - cf-lattice.yml
+  - name: terraform-image-changes
+    type: git
+    source:
+      uri: git@github.com:sclevine/lattice-release.git
+      branch: master
+      private_key: {{github-ssh-key}}
+      ignore_paths: [terraform/aws]
+      paths:
+        - terraform
+        - diego-release
+        - garden-linux-release
+        - cf-routing-release
+        - cf-release
+        - cf-lattice.yml
+
+  - name: vagrant-box-version
+    type: semver
+    source:
+      bucket: lattice
+      key: vagrant/box-version
+      access_key_id: {{aws-access-key-id}}
+      secret_access_key: {{aws-secret-access-key}}
+      region_name: us-west-2
+  - name: vagrant-box-commit
     type: s3
     source:
       bucket: lattice
       region_name: us-west-2
-      regexp: development/vagrant-boxes-v(.*).box
+      regexp: vagrant/box-commit-v(.*)
       private: true
       access_key_id: {{aws-access-key-id}}
       secret_access_key: {{aws-secret-access-key}}
+  - name: terraform-ami-version
+    type: semver
+    source:
+      bucket: lattice
+      key: terraform/ami-version
+      access_key_id: {{aws-access-key-id}}
+      secret_access_key: {{aws-secret-access-key}}
+      region_name: us-west-2
+  - name: terraform-ami-metadata
+    type: s3
+    source:
+      bucket: lattice
+      region_name: us-west-2
+      regexp: terraform/ami-metadata-v(.*)
+      private: true
+      access_key_id: {{aws-access-key-id}}
+      secret_access_key: {{aws-secret-access-key}}
+
   - name: lattice-tgz
     type: s3
     source:
       bucket: lattice
       region_name: us-west-2
-      regexp: development/lattice-v(.*).tgz
+      regexp: lattice-tgz/lattice-v(.*).tgz
       private: true
       access_key_id: {{aws-access-key-id}}
       secret_access_key: {{aws-secret-access-key}}
-  - name: ltc-tgz
+  - name: lattice-bundle-ci
     type: s3
     source:
       bucket: lattice
       region_name: us-west-2
-      regexp: development/ltc-v(.*).tgz
-      private: true
+      regexp: ci/lattice-bundle-v(.*).zip
+      access_key_id: {{aws-access-key-id}}
+      secret_access_key: {{aws-secret-access-key}}
+  - name: lattice-bundle-acceptance
+    type: s3
+    source:
+      bucket: lattice
+      region_name: us-west-2
+      regexp: acceptance/lattice-bundle-v(.*).zip
+      access_key_id: {{aws-access-key-id}}
+      secret_access_key: {{aws-secret-access-key}}
+  - name: lattice-bundle-nightly
+    type: s3
+    source:
+      bucket: lattice
+      region_name: us-west-2
+      regexp: nightly/lattice-bundle-v(.*).zip
       access_key_id: {{aws-access-key-id}}
       secret_access_key: {{aws-secret-access-key}}
 
+  - name: lattice-tracker
+    type: tracker
+    source:
+      token: {{tracker-api-token}}
+      project_id: "1183596"
+  - name: publish-nightly-timer
+    type: time
+    source:
+      start: 18:00 -0500
+      stop: 19:00 -0500
+      interval: 1h
 
 jobs:
-  - name: build-vagrant-boxes
+  - name: build-vagrant-images
+    serial: true
     plan:
-      - aggregate:
-        - get: lattice-ci
-        - get: lattice-release
-          trigger: true
-          params:
-            submodules: all
-      - task: vagrant-packer-build
-        file: lattice-ci/tasks/vagrant-packer-build/task.yml
-      - put: vagrant-boxes
+    - aggregate:
+      - get: lattice-ci
+      - get: lattice-release
+        trigger: true
+      - get: vagrant-image-changes
         params:
-          from: lattice-release/vagrant/vagrant-boxes-v(.*).tgz
-          to: /development/
+          submodules: all
+      - get: vagrant-box-commit
+      - get: current-vagrant-box-version
+        resource: vagrant-box-version
+      - get: next-vagrant-box-version
+        resource: vagrant-box-version
+        params:
+          bump: minor
+    - task: build-vagrant-images
+      file: lattice-ci/tasks/build-vagrant-images/task.yml
+      config:
+        params:
+          ATLAS_TOKEN: {{atlas-api-token}}
+    - put: vagrant-box-commit
+      params:
+        from: build-vagrant-images/box-commit-v(.*)
+        to: /vagrant/
+    - put: current-vagrant-box-version
+      params:
+        file: next-vagrant-box-version/number
 
-  - name: build-lattice-tar
+  - name: unit-test-ltc
     plan:
-      - aggregate:
-        - get: lattice-ci
-        - get: lattice-release
-          trigger: true
-          params:
-            submodules: all
-      - task: build-lattice-tar
-        file: lattice-ci/tasks/build-lattice-tar/task.yml
-      - put: lattice-tgz
+    - aggregate:
+      - get: lattice-ci
+      - get: lattice-release
+        trigger: true
         params:
-          from: lattice-release/lattice-v(.*).tgz
-          to: /development/
+          submodules: all
+        passed: [build-vagrant-images]
+      - get: vagrant-box-version
+        passed: [build-vagrant-images]
+    - task: unit-test
+      file: lattice-ci/tasks/unit-test/task.yml
+      config:
+        params:
+          PACKAGE: github.com/cloudfoundry-incubator/lattice/ltc
 
-  - name: build-ltc-tar
+  - name: unit-test-cell-helpers
     plan:
-      - aggregate:
-        - get: lattice-ci
-        - get: lattice-release
-          trigger: true
-          params:
-            submodules: all
-      - task: build-ltc-tar
-        file: lattice-ci/tasks/build-ltc-tar/task.yml
-      - put: ltc-tgz
+    - aggregate:
+      - get: lattice-ci
+      - get: lattice-release
+        trigger: true
         params:
-          from: lattice-release/ltc-v(.*).tgz
-          to: /development/
+          submodules: all
+        passed: [build-vagrant-images]
+      - get: vagrant-box-version
+        passed: [build-vagrant-images]
+    - task: unit-test
+      file: lattice-ci/tasks/unit-test/task.yml
+      config:
+        params:
+          PACKAGE: github.com/cloudfoundry-incubator/lattice/cell-helpers
+
+  - name: gofmt
+    plan:
+    - aggregate:
+      - get: lattice-ci
+      - get: lattice-release
+        trigger: true
+        params:
+          submodules: [src/github.com/cloudfoundry-incubator/lattice]
+      - get: vagrant-box-version
+        passed: [build-vagrant-images]
+    - task: unit-test
+      file: lattice-ci/tasks/gofmt/task.yml
+      config:
+        params:
+          PACKAGE: github.com/cloudfoundry-incubator/lattice
+
+  - name: compile-lattice-tgz
+    plan:
+    - aggregate:
+      - get: lattice-ci
+      - get: lattice-release
+        trigger: true
+        params:
+          submodules: all
+        passed:
+        - unit-test-ltc
+        - unit-test-cell-helpers
+        - gofmt
+      - get: vagrant-box-version
+        passed:
+        - unit-test-ltc
+        - unit-test-cell-helpers
+        - gofmt
+    - task: compile-lattice-tgz
+      file: lattice-ci/tasks/compile-lattice-tgz/task.yml
+    - put: lattice-tgz
+      params:
+        from: compile-lattice-tgz/lattice-v(.*).tgz
+        to: /lattice-tgz/
+
+  - name: build-bundle
+    plan:
+    - aggregate:
+      - get: lattice-ci
+      - get: lattice-release
+        trigger: true
+        passed: [compile-lattice-tgz]
+      - get: lattice-tgz
+        passed: [compile-lattice-tgz]
+      - get: vagrant-box-version
+        passed: [compile-lattice-tgz]
+    - task: build-bundle
+      file: lattice-ci/tasks/build-bundle/task.yml
+    - put: lattice-bundle-ci
+      params:
+        from: build-bundle/lattice-bundle-v(.*).zip
+        to: /ci/
 
   - name: cluster-test-vagrant-aws
     plan:
     - aggregate:
+      - get: lattice-ci
+      - get: lattice-release
+        trigger: true
+        passed: [compile-lattice-tgz]
       - get: lattice-tgz
-        trigger: true
-      - get: ltc-tgz
-        trigger: true
-      - get: vagrant-boxes
-        trigger: true
-        passed: [build-vagrant-boxes]
+        passed: [compile-lattice-tgz]
+      - get: vagrant-box-version
+        passed: [compile-lattice-tgz]
     - task: deploy-vagrant-aws-box
       file: lattice-ci/tasks/deploy-vagrant-aws-box/task.yml
       config:

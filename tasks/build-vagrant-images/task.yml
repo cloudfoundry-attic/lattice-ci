@@ -1,0 +1,15 @@
+---
+platform: linux
+image: docker:///cloudfoundry/lattice-ci
+inputs:
+- name: lattice-ci
+- name: lattice-release
+- name: vagrant-images-changes
+- name: current-vagrant-box-version
+- name: next-vagrant-box-version
+- name: vagrant-box-commit
+run:
+  path: lattice-ci/tasks/build-vagrant-images/run.sh
+params:
+  NAMES: amazon-ebs,virtualbox-iso,vmware-iso
+  ATLAS_TOKEN: some-token

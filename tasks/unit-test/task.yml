@@ -1,9 +1,11 @@
 ---
 platform: linux
-image: docker:///cloudfoundry/lattice-pipeline
+image: docker:///cloudfoundry/lattice-ci
 inputs:
-- name: lattice
 - name: lattice-ci
+- name: lattice-release
 run:
   path: lattice-ci/tasks/unit-test-ltc/run.sh
+params:
+  PACKAGE: some-package
 

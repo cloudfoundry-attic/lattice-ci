@@ -3,8 +3,9 @@ platform: linux
 image: docker:///cloudfoundry/lattice-pipeline
 inputs:
 - name: lattice-ci
-- name: lattice
-- name: lattice-tar-build
+- name: lattice-release
+- name: vagrant-aws-box
+- name: lattice-tgz
 run:
   path: lattice-ci/tasks/deploy-vagrant-aws/run.sh
 params:

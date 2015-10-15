@@ -3,7 +3,6 @@
 set -ex
 
 export AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY
-gem install bundler
 
 pushd lattice-ci/tasks/generate-lattice-bundle-listing
   bundle install

@@ -1,9 +1,0 @@
----
-platform: linux
-image: docker:///cloudfoundry/lattice-pipeline
-inputs:
-- name: lattice-ci
-- name: lattice-release
-run:
-  path: lattice-ci/tasks/vagrant-packer-build/run.sh
-
