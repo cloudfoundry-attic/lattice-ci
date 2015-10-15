@@ -306,7 +306,7 @@ jobs:
         passed: [build-bundle]
       - get: lattice-bundle-ci
         passed: [build-bundle]
-    do:
+    - do:
       - task: deploy-vagrant-aws
         file: lattice-ci/tasks/deploy-vagrant-aws/task.yml
         config:
@@ -319,13 +319,14 @@ jobs:
           file: lattice-ci/tasks/cluster-test-vagrant-aws-dav/task.yml
         - task: cluster-test-vagrant-aws-s3
           file: lattice-ci/tasks/cluster-test-vagrant-aws-s3/task.yml
-          params:
-            AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
-            AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
-            AWS_REGION: {{cluster-test-aws-region}}
-            AWS_BUCKET: {{cluster-test-s3-bucket-name}}
-    ensure:
-      - task: cleanup-deploy-vagrant-aws
+          config:
+            params:
+              AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
+              AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
+              AWS_REGION: {{cluster-test-aws-region}}
+              AWS_BUCKET: {{cluster-test-s3-bucket-name}}
+      ensure:
+        task: cleanup-deploy-vagrant-aws
         file: lattice-ci/tasks/cleanup-deploy-vagrant-aws/run.sh
 
   - name: cluster-test-terraform-aws
@@ -339,7 +340,7 @@ jobs:
         passed: [build-bundle]
       - get: lattice-bundle-ci
         passed: [build-bundle]
-    do:
+    - do:
       - task: deploy-terraform-aws
         file: lattice-ci/tasks/deploy-terraform-aws/task.yml
         config:
@@ -352,11 +353,12 @@ jobs:
           file: lattice-ci/tasks/cluster-test-terraform-aws-dav/task.yml
         - task: cluster-test-terraform-aws-s3
           file: lattice-ci/tasks/cluster-test-terraform-aws-s3/task.yml
-          params:
-            AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
-            AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
-            AWS_REGION: {{cluster-test-aws-region}}
-            AWS_BUCKET: {{cluster-test-s3-bucket-name}}
-    ensure:
-      - task: cleanup-deploy-terraform-aws
+          config:
+            params:
+              AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
+              AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
+              AWS_REGION: {{cluster-test-aws-region}}
+              AWS_BUCKET: {{cluster-test-s3-bucket-name}}
+      ensure:
+        task: cleanup-deploy-terraform-aws
         file: lattice-ci/tasks/cleanup-deploy-terraform-aws/run.sh
