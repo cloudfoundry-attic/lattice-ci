@@ -2,13 +2,13 @@
 
 set -ex
 
-SYSTEM_DOMAIN=`cat deploy-vagrant-aws/system_domain`
+DOMAIN=`cat deploy-vagrant-aws/domain`
 
-mkdir -p ~/.lattice
+mkdir ~/.lattice
 
 cat > ~/.lattice/config.json <<EOF
 {
-  "target": "${SYSTEM_DOMAIN}",
+  "target": "${DOMAIN}",
   "active_blob_store": 1,
   "s3_blob_store": {
     "region": "${AWS_REGION}",
@@ -19,5 +19,6 @@ cat > ~/.lattice/config.json <<EOF
 }
 EOF
 
-tar zxf ltc-tar-build/ltc-*.tgz ltc-linux-amd64
-./ltc-linux-amd64 test -v -t 5m || ./ltc-linux-amd64 test -v -t 10m
+curl -O http://receptor.${DOMAIN}/v1/sync/linux/ltc
+chmod a+x ltc
+./ltc test -v -t 5m || ./ltc test -v -t 10m

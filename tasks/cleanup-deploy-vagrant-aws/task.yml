@@ -1,9 +1,8 @@
 ---
 platform: linux
-image: docker:///cloudfoundry/lattice-pipeline
+image: docker:///cloudfoundry/lattice-ci
 inputs:
 - name: lattice-ci
-- name: lattice
 - name: deploy-vagrant-aws
 run:
   path: lattice-ci/tasks/cleanup-deploy-vagrant-aws/run.sh

@@ -2,31 +2,32 @@
 
 set -ex
 
-DOT_LATTICE_DIR=$HOME/.lattice
-LTC_VERSION=v$(cat ltc-tar-build/version)
-TERRAFORM_TMP_DIR=$PWD/deploy-terraform-aws/terraform-tmp
+dot_lattice_dir=$HOME/.lattice
+terraform_tmp_dir=$PWD/deploy-terraform-aws/lattice-bundle-v*/terraform/
 
-mkdir -p $DOT_LATTICE_DIR
+mkdir $dot_lattice_dir
 
-pushd $TERRAFORM_TMP_DIR
-    LATTICE_TARGET=$(terraform output lattice_target)
-    LATTICE_USERNAME=$(terraform output lattice_username)
-    LATTICE_PASSWORD=$(terraform output lattice_password)
-    cat > $DOT_LATTICE_DIR/config.json <<EOF
+pushd $terraform_tmp_dir
+    lattice_target=$(terraform output lattice_target)
+    lattice_username=$(terraform output lattice_username)
+    lattice_password=$(terraform output lattice_password)
+    cat > $dot_lattice_dir/config.json <<EOF
 {
-    "target": "${LATTICE_TARGET}",
-    "username": "${LATTICE_USERNAME}",
-    "password": "${LATTICE_PASSWORD}",
+    "target": "${lattice_target}",
+    "username": "${lattice_username}",
+    "password": "${lattice_password}",
     "active_blob_store": 0,
     "dav_blob_store": {
-        "host": "${LATTICE_TARGET}",
+        "host": "${lattice_target}",
         "port": "8444",
-        "username": "${LATTICE_USERNAME}",
-        "password": "${LATTICE_PASSWORD}"
+        "username": "${lattice_username}",
+        "password": "${lattice_password}"
     }
 }
 EOF
 popd
 
-tar xzf ltc-tar-build/ltc-${LTC_VERSION}.tgz
-./ltc-linux-amd64 test -v --timeout=5m
+curl -O http://receptor.${lattice_target}/v1/sync/linux/ltc
+chmod a+x ltc
+
+./ltc test -v --timeout=5m
