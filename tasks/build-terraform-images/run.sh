@@ -12,9 +12,14 @@ if [[ $current_ami_commit == $next_ami_commit ]]; then
   exit 0
 fi
 
-
 mkdir -p $HOME/.ssh
 ssh-keyscan github.com >> $HOME/.ssh/known_hosts
+
+echo "$GITHUB_SSH_KEY" > private_key.pem
+chmod 0600 private_key.pem
+ssh-add private_key.pem > /dev/null
+rm private_key.pem
+
 pushd terraform-image-changes > /dev/null
   git submodule update --init --recursive
 popd > /dev/null

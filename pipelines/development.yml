@@ -166,6 +166,7 @@ jobs:
         file: lattice-ci/tasks/build-vagrant-images/task.yml
         config:
           params:
+            GITHUB_SSH_KEY: {{github-ssh-key}}
             AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
             AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
             ATLAS_TOKEN: {{atlas-api-token}}
@@ -174,6 +175,7 @@ jobs:
         file: lattice-ci/tasks/build-terraform-images/task.yml
         config:
           params:
+            GITHUB_SSH_KEY: {{github-ssh-key}}
             AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
             AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
     - put: vagrant-box-commit
