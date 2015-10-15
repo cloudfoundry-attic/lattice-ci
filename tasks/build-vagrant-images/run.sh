@@ -15,6 +15,7 @@ fi
 mkdir -p $HOME/.ssh
 ssh-keyscan github.com >> $HOME/.ssh/known_hosts
 
+eval $(ssh-agent)
 echo "$GITHUB_SSH_KEY" > private_key.pem
 chmod 0600 private_key.pem
 ssh-add private_key.pem > /dev/null
