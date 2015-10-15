@@ -141,7 +141,6 @@ jobs:
         trigger: true
         params:
           submodules: none
-          depth: 1
       - get: vagrant-image-changes
         params:
           submodules: none

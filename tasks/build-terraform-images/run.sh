@@ -12,6 +12,8 @@ if [[ $current_ami_commit == $next_ami_commit ]]; then
   exit 0
 fi
 
+
+ssh-keyscan github.com >> ~/.ssh/known_hosts
 pushd terraform-image-changes > /dev/null
   git submodule update --init --recursive
 popd > /dev/null
