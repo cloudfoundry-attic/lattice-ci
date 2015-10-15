@@ -4,8 +4,9 @@ ENV HOME /root
 ENV PATH /usr/local/go/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin
 ENV GOROOT /usr/local/go
 ENV GO_VERSION 1.5.1
-ENV TERRAFORM_VERSION 0.6.3
 ENV VAGRANT_VERSION 1.7.4
+ENV TERRAFORM_VERSION 0.6.3
+ENV PACKER_VERSION 0.8.6
 
 RUN \
   apt-get -qqy update && \
@@ -32,3 +33,8 @@ RUN \
   rm -f terraform_${TERRAFORM_VERSION}_linux_amd64.zip && \
   cd /usr/local/bin && ln -s /usr/local/terraform/* .
 
+RUN \
+  wget --quiet "https://dl.bintray.com/mitchellh/packer/packer_${PACKER_VERSION}_linux_amd64.zip" && \
+  unzip packer_${PACKER_VERSION}_linux_amd64.zip -d /usr/local/packer && \
+  rm -f packer_${PACKER_VERSION}_linux_amd64.zip && \
+  cd /usr/local/bin && ln -s /usr/local/packer/* .
