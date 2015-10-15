@@ -45,7 +45,7 @@ resources:
     type: semver
     source:
       bucket: lattice
-      key: vagrant/box-version
+      key: /vagrant/box-version
       access_key_id: {{aws-access-key-id}}
       secret_access_key: {{aws-secret-access-key}}
       region_name: us-west-2
@@ -140,11 +140,7 @@ jobs:
       - get: lattice-release
         trigger: true
       - get: vagrant-image-changes
-        params:
-          submodules: all
       - get: terraform-image-changes
-        params:
-          submodules: all
       - get: vagrant-box-commit
       - get: current-vagrant-box-version
         resource: vagrant-box-version
@@ -164,7 +160,10 @@ jobs:
         file: lattice-ci/tasks/build-vagrant-images/task.yml
         config:
           params:
-            atlas_token: {{atlas-api-token}}
+            AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
+            AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
+            ATLAS_TOKEN: {{atlas-api-token}}
+            NAMES: amazon-ebs
       - task: build-terraform-images
         file: lattice-ci/tasks/build-terraform-images/task.yml
         config:
@@ -362,3 +361,40 @@ jobs:
       ensure:
         task: cleanup-deploy-terraform-aws
         file: lattice-ci/tasks/cleanup-deploy-terraform-aws/run.sh
+
+  - name: publish-acceptance
+    plan:
+    - get: lattice-release
+      trigger: true
+      passed:
+      - cluster-test-vagrant-aws
+      - cluster-test-terraform-aws
+    - get: lattice-bundle-ci
+      passed:
+      - cluster-test-vagrant-aws
+      - cluster-test-terraform-aws
+    - put: lattice-bundle-acceptance
+      params:
+        from: lattice-bundle-ci/lattice-bundle-v(.*).zip
+        to: /acceptance/
+    - put: lattice-tracker
+      params:
+        comment: lattice-bundle-acceptance/url
+        repos: [lattice-release]
+
+  - name: publish-nightly
+    plan:
+    - get: publish-nightly-timer
+      trigger: true
+    - get: lattice-release
+      passed:
+      - cluster-test-vagrant-aws
+      - cluster-test-terraform-aws
+    - get: lattice-bundle-ci
+      passed:
+      - cluster-test-vagrant-aws
+      - cluster-test-terraform-aws
+    - put: lattice-bundle-nightly
+      params:
+        from: lattice-bundle-ci/lattice-bundle-v(.*).zip
+        to: /nightly/
