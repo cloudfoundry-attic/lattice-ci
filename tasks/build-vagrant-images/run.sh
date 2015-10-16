@@ -19,7 +19,7 @@ current_box_commit=$(cat "vagrant-box-commit/box-commit-v$current_version")
 next_box_commit=$(git -C vagrant-image-changes rev-parse -q --verify HEAD)
 
 if [[ $current_box_commit == $next_box_commit ]]; then
-  echo $current_version > box-version-number
+  echo -n $current_version > box-version-number
   exit 0
 fi
 
@@ -47,5 +47,5 @@ EOF)
 echo $lattice_json | jq '. + '"$post_processor_json" > vagrant-image-changes/vagrant/lattice.json
 
 vagrant-image-changes/vagrant/build -var "version=$next_version" -only=$NAMES
-echo $next_box_commit > "box-commit-v$next_version"
-echo $next_version > box-version-number
+echo -n $next_box_commit > "box-commit-v$next_version"
+echo -n $next_version > box-version-number
