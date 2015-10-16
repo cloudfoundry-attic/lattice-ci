@@ -5,7 +5,7 @@ inputs:
 - name: lattice-ci
 - name: lattice-release
 run:
-  path: lattice-ci/tasks/unit-test-ltc/run.sh
+  path: lattice-ci/tasks/unit-test/run.sh
 params:
   PACKAGE: some-package
 
