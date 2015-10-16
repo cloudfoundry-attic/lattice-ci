@@ -7,7 +7,7 @@ terraform_dir=$(echo $PWD/lattice-bundle-v*/terraform/aws)
 
 echo "$AWS_SSH_PRIVATE_KEY" > $terraform_dir/key.pem
 
-cat > $terraform_dir/lattice.tfvars <<EOF
+cat > $terraform_dir/terraform.tfvars <<EOF
 username = "user"
 password = "pass"
 
