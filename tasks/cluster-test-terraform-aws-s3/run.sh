@@ -3,11 +3,11 @@
 set -ex
 
 dot_lattice_dir=$HOME/.lattice
-terraform_dir=$PWD/deploy-terraform-aws/lattice-bundle-v*/terraform/
+terraform_dir=$PWD/deploy-terraform-aws/lattice-bundle-v*/terraform/aws
 
 mkdir -p $dot_lattice_dir
 
-pushd $terraform_dir
+pushd $terraform_dir >/dev/null
     lattice_target=$(terraform output lattice_target)
     lattice_username=$(terraform output lattice_username)
     lattice_password=$(terraform output lattice_password)
@@ -25,9 +25,9 @@ pushd $terraform_dir
     }
 }
 EOF
-popd
+popd >/dev/null
 
-curl -O http://receptor.${lattice_target}/v1/sync/linux/ltc
-chmod a+x ltc
+curl -O "http://receptor.${lattice_target}/v1/sync/linux/ltc"
+chmod +x ltc
 
 ./ltc test -v --timeout=5m

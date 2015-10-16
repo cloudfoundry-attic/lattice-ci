@@ -1,19 +1,17 @@
 #!/bin/bash
 
-set -x -e
+set -e
 
-DIR=$PWD
+echo "$GITHUB_PRIVATE_KEY" > github.key
+chmod 600 github.key
+export GIT_SSH_COMMAND="/usr/bin/ssh -i $PWD/github.key"
 
-cat <<< "$GITHUB_PRIVATE_KEY" > $DIR/github.key
-chmod 600 $DIR/github.key
-export GIT_SSH_COMMAND="/usr/bin/ssh -i $DIR/github.key"
+set -x
 
-cd lattice-website
+pushd lattice-website >/dev/null
+  bundle install
+  apt-get install node -y --no-install-recommends
 
-gem install bundle
-
-bundle install
-apt-get install node -y --no-install-recommends
-
-bundle exec middleman build
-bundle exec middleman deploy
+  bundle exec middleman build
+  bundle exec middleman deploy
+popd >/dev/null

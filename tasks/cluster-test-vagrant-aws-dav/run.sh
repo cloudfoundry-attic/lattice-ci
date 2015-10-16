@@ -2,10 +2,10 @@
 
 set -ex
 
-DOMAIN=`cat deploy-vagrant-aws/domain`
+lattice_target=$(cat deploy-vagrant-aws/domain)
 
-curl -O http://receptor.${DOMAIN}/v1/sync/linux/ltc
-chmod a+x ltc
+curl -O "http://receptor.${lattice_target}/v1/sync/linux/ltc"
+chmod +x ltc
 
-./ltc target "$DOMAIN"
+./ltc target "$lattice_target"
 ./ltc test -v -t 5m || ./ltc test -v -t 10m

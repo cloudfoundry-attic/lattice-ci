@@ -12,4 +12,3 @@ $stdin.readlines.each do |line|
 end
 
 print ami_metadata.to_json
-

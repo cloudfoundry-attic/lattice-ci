@@ -1,6 +1,17 @@
 #!/bin/bash
 
-set -ex
+set -e
+
+mkdir -p $HOME/.ssh
+ssh-keyscan github.com >> $HOME/.ssh/known_hosts
+
+eval $(ssh-agent)
+echo "$GITHUB_SSH_KEY" > private_key.pem
+chmod 0600 private_key.pem
+ssh-add private_key.pem > /dev/null
+rm private_key.pem
+
+set -x
 
 current_version=$(cat current-vagrant-box-version/number)
 next_version=$(cat next-vagrant-box-version/number)
@@ -12,20 +23,7 @@ if [[ $current_box_commit == $next_box_commit ]]; then
   exit 0
 fi
 
-mkdir -p $HOME/.ssh
-ssh-keyscan github.com >> $HOME/.ssh/known_hosts
-
-set +x
-eval $(ssh-agent)
-echo "$GITHUB_SSH_KEY" > private_key.pem
-chmod 0600 private_key.pem
-ssh-add private_key.pem > /dev/null
-rm private_key.pem
-set -x
-
-pushd vagrant-image-changes > /dev/null
-  git submodule update --init --recursive
-popd > /dev/null
+git -C vagrant-image-changes submodule update --init --recursive
 
 lattice_json=$(cat vagrant-image-changes/vagrant/lattice.json)
 post_processor_json=$(cat <<EOF

@@ -321,6 +321,7 @@ jobs:
             AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
             AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
             AWS_SSH_PRIVATE_KEY: {{aws-ssh-private-key}}
+            AWS_SSH_PRIVATE_KEY_NAME: {{aws-ssh-private-key-name}}
       - aggregate:
         - task: cluster-test-vagrant-aws-dav
           file: lattice-ci/tasks/cluster-test-vagrant-aws-dav/task.yml
@@ -330,8 +331,8 @@ jobs:
             params:
               AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
               AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
-              AWS_REGION: {{cluster-test-aws-region}}
-              AWS_BUCKET: {{cluster-test-s3-bucket-name}}
+              AWS_REGION: {{droplet-store-bucket-region}}
+              S3_BUCKET_NAME: {{droplet-store-bucket-name}}
       ensure:
         task: cleanup-deploy-vagrant-aws
         file: lattice-ci/tasks/cleanup-deploy-vagrant-aws/run.sh
@@ -355,6 +356,7 @@ jobs:
             AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
             AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
             AWS_SSH_PRIVATE_KEY: {{aws-ssh-private-key}}
+            AWS_SSH_PRIVATE_KEY_NAME: {{aws-ssh-private-key-name}}
       - aggregate:
         - task: cluster-test-terraform-aws-dav
           file: lattice-ci/tasks/cluster-test-terraform-aws-dav/task.yml
@@ -364,8 +366,8 @@ jobs:
             params:
               AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
               AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
-              AWS_REGION: {{cluster-test-aws-region}}
-              AWS_BUCKET: {{cluster-test-s3-bucket-name}}
+              AWS_REGION: {{droplet-store-bucket-region}}
+              S3_BUCKET_NAME: {{droplet-store-bucket-name}}
       ensure:
         task: cleanup-deploy-terraform-aws
         file: lattice-ci/tasks/cleanup-deploy-terraform-aws/run.sh

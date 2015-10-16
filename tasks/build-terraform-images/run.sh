@@ -1,6 +1,17 @@
 #!/bin/bash
 
-set -ex
+set -e
+
+mkdir -p $HOME/.ssh
+ssh-keyscan github.com >> $HOME/.ssh/known_hosts
+
+eval $(ssh-agent)
+echo "$GITHUB_SSH_KEY" > private_key.pem
+chmod 0600 private_key.pem
+ssh-add private_key.pem > /dev/null
+rm private_key.pem
+
+set -x
 
 current_version=$(cat current-terraform-ami-version/number)
 next_version=$(cat next-terraform-ami-version/number)
@@ -12,24 +23,10 @@ if [[ $current_ami_commit == $next_ami_commit ]]; then
   exit 0
 fi
 
-mkdir -p $HOME/.ssh
-ssh-keyscan github.com >> $HOME/.ssh/known_hosts
-
-set +x
-eval $(ssh-agent)
-echo "$GITHUB_SSH_KEY" > private_key.pem
-chmod 0600 private_key.pem
-ssh-add private_key.pem > /dev/null
-rm private_key.pem
-set -x
-
-pushd terraform-image-changes > /dev/null
-  git submodule update --init --recursive
-popd > /dev/null
-
+git -C terraform-image-changes submodule update --init --recursive
 terraform-image-changes/terraform/build -machine-readable -var "version=$next_version" | tee build.log
 
-tail -50 build.log | ./lattice-ci/tasks/build-terraform-images/parse-build-output.rb > ami-metadata-v${next_version}.tf.json
+tail -50 build.log | lattice-ci/tasks/build-terraform-images/parse-build-output.rb > ami-metadata-v${next_version}.tf.json
 echo $next_ami_commit > ami-commit-v$next_version
 echo $next_version > ami-version-number
 

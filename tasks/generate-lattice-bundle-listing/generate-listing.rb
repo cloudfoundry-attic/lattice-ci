@@ -4,8 +4,10 @@ require 's3'
 require 'erb'
 require 'ostruct'
 
-service = S3::Service.new(:access_key_id => ENV['AWS_ACCESS_KEY_ID'],
-						  :secret_access_key => ENV['AWS_SECRET_ACCESS_KEY'])
+service = S3::Service.new(
+  access_key_id: ENV['AWS_ACCESS_KEY_ID'],
+  secret_access_key: ENV['AWS_SECRET_ACCESS_KEY']
+)
 
 S3_BUCKET = 'lattice'
 
