@@ -5,5 +5,5 @@ inputs:
 - name: lattice-ci
 - name: lattice-release
 run:
-  path: lattice-ci/tasks/compile-lattice-tar/run.sh
+  path: lattice-ci/tasks/compile-lattice-tgz/run.sh
 
