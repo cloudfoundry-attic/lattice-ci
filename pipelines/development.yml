@@ -55,7 +55,6 @@ resources:
       bucket: lattice
       region_name: us-west-2
       regexp: vagrant/box-commit-v(.*)
-      private: true
       access_key_id: {{aws-access-key-id}}
       secret_access_key: {{aws-secret-access-key}}
   - name: terraform-ami-version
@@ -72,7 +71,6 @@ resources:
       bucket: lattice
       region_name: us-west-2
       regexp: terraform/ami-metadata-v(.*)\.tf\.json
-      private: true
       access_key_id: {{aws-access-key-id}}
       secret_access_key: {{aws-secret-access-key}}
   - name: terraform-ami-commit
@@ -81,7 +79,6 @@ resources:
       bucket: lattice
       region_name: us-west-2
       regexp: terraform/ami-commit-v(.*)
-      private: true
       access_key_id: {{aws-access-key-id}}
       secret_access_key: {{aws-secret-access-key}}
 
@@ -91,7 +88,6 @@ resources:
       bucket: lattice
       region_name: us-west-2
       regexp: lattice-tgz/lattice-v(.*).tgz
-      private: true
       access_key_id: {{aws-access-key-id}}
       secret_access_key: {{aws-secret-access-key}}
   - name: lattice-bundle-ci
@@ -204,8 +200,6 @@ jobs:
       - get: lattice-ci
       - get: lattice-release
         trigger: true
-        params:
-          submodules: all
         passed: [build-images]
       - get: vagrant-box-version
         passed: [build-images]
@@ -223,8 +217,6 @@ jobs:
       - get: lattice-ci
       - get: lattice-release
         trigger: true
-        params:
-          submodules: all
         passed: [build-images]
       - get: vagrant-box-version
         passed: [build-images]
@@ -242,9 +234,9 @@ jobs:
       - get: lattice-ci
       - get: lattice-release
         trigger: true
+        passed: [build-images]
         params:
           submodules: [src/github.com/cloudfoundry-incubator/lattice]
-        passed: [build-images]
       - get: vagrant-box-version
         passed: [build-images]
       - get: terraform-ami-metadata
@@ -261,8 +253,6 @@ jobs:
       - get: lattice-ci
       - get: lattice-release
         trigger: true
-        params:
-          submodules: all
         passed:
         - unit-test-ltc
         - unit-test-cell-helpers
@@ -291,6 +281,8 @@ jobs:
       - get: lattice-release
         trigger: true
         passed: [compile-lattice-tgz]
+        params:
+          submodules: none
       - get: lattice-tgz
         passed: [compile-lattice-tgz]
       - get: vagrant-box-version
@@ -311,6 +303,8 @@ jobs:
       - get: lattice-release
         trigger: true
         passed: [build-bundle]
+        params:
+          submodules: none
       - get: lattice-tgz
         passed: [build-bundle]
       - get: lattice-bundle-ci
@@ -346,6 +340,8 @@ jobs:
       - get: lattice-release
         trigger: true
         passed: [build-bundle]
+        params:
+          submodules: none
       - get: lattice-tgz
         passed: [build-bundle]
       - get: lattice-bundle-ci
@@ -381,6 +377,8 @@ jobs:
       passed:
       - cluster-test-vagrant-aws
       - cluster-test-terraform-aws
+      params:
+        submodules: none
     - get: lattice-bundle-ci
       passed:
       - cluster-test-vagrant-aws
@@ -398,10 +396,6 @@ jobs:
     plan:
     - get: publish-nightly-timer
       trigger: true
-    - get: lattice-release
-      passed:
-      - cluster-test-vagrant-aws
-      - cluster-test-terraform-aws
     - get: lattice-bundle-ci
       passed:
       - cluster-test-vagrant-aws
