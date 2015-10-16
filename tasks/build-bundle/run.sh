@@ -10,8 +10,8 @@ output_dir=lattice-bundle-$lattice_release_version
 mkdir -p $output_dir/{vagrant,terraform}
 
 box_version_filter="s/config\.vm\.box_version = '0'/config.vm.box_version = '$vagrant_box_version'/"
-vagrantfile=$(sed "$box_version_filter" lattice-release/vagrant/Vagrantfile)
-echo "LATTICE_TGZ_URL = '$lattice_tgz_url'\n$vagrantfile" > $output_dir/vagrant/Vagrantfile
+echo "LATTICE_TGZ_URL = '$lattice_tgz_url'" > $output_dir/vagrant/Vagrantfile
+sed "$box_version_filter" lattice-release/vagrant/Vagrantfile >> $output_dir/vagrant/Vagrantfile
 
 cp -r lattice-release/terraform/aws $output_dir/terraform/
 filter='{"variables": (.variables + {"lattice_tgz_url": {"default": "'"$lattice_tgz_url"'"}})}'
