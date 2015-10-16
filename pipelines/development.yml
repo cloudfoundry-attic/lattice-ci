@@ -244,6 +244,7 @@ jobs:
         trigger: true
         params:
           submodules: [src/github.com/cloudfoundry-incubator/lattice]
+        passed: [build-images]
       - get: vagrant-box-version
         passed: [build-images]
       - get: terraform-ami-metadata
