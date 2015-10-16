@@ -3,10 +3,9 @@
 set -e
 
 unzip lattice-bundle-ci/lattice-bundle-v*.zip
-terraform_dir=$PWD/lattice-bundle-v*/terraform/aws
+terraform_dir=$(echo $PWD/lattice-bundle-v*/terraform/aws)
 
-echo "$AWS_SSH_PRIVATE_KEY" > key.pem
-mv key.pem $terraform_dir/
+echo "$AWS_SSH_PRIVATE_KEY" > $terraform_dir/key.pem
 
 cat > $terraform_dir/lattice.tfvars <<EOF
 username = "user"
