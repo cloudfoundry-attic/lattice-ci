@@ -11,8 +11,6 @@ chmod 0600 private_key.pem
 ssh-add private_key.pem > /dev/null
 rm private_key.pem
 
-set -x
-
 current_version=$(cat current-vagrant-box-version/number)
 next_version=$(cat next-vagrant-box-version/number)
 current_box_commit=$(cat "vagrant-box-commit/box-commit-v$current_version")
@@ -30,14 +28,39 @@ lattice_json=$(cat vagrant-image-changes/vagrant/lattice.json)
 post_processor_json=$(cat <<EOF
 {
   "post-processors": [[
-    {"type": "vagrant"},
+    {
+      "type": "vagrant"
+    },
     {
       "type": "atlas",
+      "only": ["amazon-ebs"],
       "token": "$ATLAS_TOKEN",
       "artifact": "lattice/collocated",
       "artifact_type": "vagrant.box",
       "metadata": {
-        "provider": "{{.Provider}}",
+        "provider": "aws",
+        "version": "$next_version"
+      }
+    },
+    {
+      "type": "atlas",
+      "only": ["vmware-iso"],
+      "token": "$ATLAS_TOKEN",
+      "artifact": "lattice/collocated",
+      "artifact_type": "vagrant.box",
+      "metadata": {
+        "provider": "vmware_desktop",
+        "version": "$next_version"
+      }
+    },
+    {
+      "type": "atlas",
+      "only": ["virtualbox-iso"],
+      "token": "$ATLAS_TOKEN",
+      "artifact": "lattice/collocated",
+      "artifact_type": "vagrant.box",
+      "metadata": {
+        "provider": "virtualbox",
         "version": "$next_version"
       }
     }
@@ -46,6 +69,8 @@ post_processor_json=$(cat <<EOF
 EOF)
 
 echo $lattice_json | jq '. + '"$post_processor_json" > vagrant-image-changes/vagrant/lattice.json
+
+set -x
 
 vagrant-image-changes/vagrant/build -var "version=$next_version" -only=$NAMES
 echo -n $next_box_commit > "box-commit-v$next_version"
