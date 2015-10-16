@@ -11,6 +11,19 @@ resources:
       uri: git@github.com:pivotal-cf-experimental/lattice-website
       branch: master
       private_key: {{github-ssh-key}}
+  - name: lattice-ci-image-changes
+    type: git
+    source:
+      uri: https://github.com/cloudfoundry-incubator/lattice-ci.git
+      branch: master
+      paths: [Dockerfile]
+  - name: lattice-ci-image
+    type: docker-image
+    source:
+      repository: cloudfoundry/lattice-ci
+      email: {{docker-hub-email}}
+      username: {{docker-hub-username}}
+      password: {{docker-hub-password}}
 
 jobs:
   - name: deploy-lattice-website
@@ -23,4 +36,14 @@ jobs:
       config:
         params:
           GITHUB_PRIVATE_KEY: {{github-ssh-key}}
+
+  - name: docker-push-lattice-ci
+    plan:
+    - get: lattice-ci
+      resource: lattice-ci-image-changes
+      trigger: true
+    - put: lattice-ci-image
+      params:
+        build: lattice-ci
+        push: true
 
