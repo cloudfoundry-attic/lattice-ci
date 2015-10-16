@@ -71,7 +71,7 @@ resources:
     source:
       bucket: lattice
       region_name: us-west-2
-      regexp: terraform/ami-metadata-v(.*)
+      regexp: terraform/ami-metadata-v(.*)\.tf\.json
       private: true
       access_key_id: {{aws-access-key-id}}
       secret_access_key: {{aws-secret-access-key}}
@@ -161,6 +161,7 @@ jobs:
         resource: terraform-ami-version
         params:
           bump: minor
+      - get: terraform-ami-metadata
     - aggregate:
       - task: build-vagrant-images
         file: lattice-ci/tasks/build-vagrant-images/task.yml

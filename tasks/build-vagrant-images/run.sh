@@ -19,6 +19,7 @@ current_box_commit=$(cat "vagrant-box-commit/box-commit-v$current_version")
 next_box_commit=$(git -C vagrant-image-changes rev-parse -q --verify HEAD)
 
 if [[ $current_box_commit == $next_box_commit ]]; then
+  echo -n $current_box_commit > "box-commit-v$current_version"
   echo -n $current_version > box-version-number
   exit 0
 fi

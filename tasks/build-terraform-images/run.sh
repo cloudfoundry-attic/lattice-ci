@@ -19,7 +19,9 @@ current_ami_commit=$(cat "terraform-ami-commit/ami-commit-v$current_version")
 next_ami_commit=$(git -C terraform-image-changes rev-parse -q --verify HEAD)
 
 if [[ $current_ami_commit == $next_ami_commit ]]; then
+  echo -n $current_ami_commit > ami-commit-v$current_version
   echo -n $current_version > ami-version-number
+  cp "terraform-ami-metadata/ami-metadata-v$current_version" .
   exit 0
 fi
 
