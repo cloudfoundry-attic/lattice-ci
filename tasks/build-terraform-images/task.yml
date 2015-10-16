@@ -8,6 +8,7 @@ inputs:
 - name: current-terraform-ami-version
 - name: next-terraform-ami-version
 - name: terraform-ami-commit
+- name: terraform-ami-metadata
 run:
   path: lattice-ci/tasks/build-terraform-images/run.sh
 params:
