@@ -14,7 +14,7 @@ echo "LATTICE_TGZ_URL = \"$lattice_tgz_url\"" > $output_dir/vagrant/Vagrantfile
 sed "$box_version_filter" lattice-release/vagrant/Vagrantfile >> $output_dir/vagrant/Vagrantfile
 
 cp -r lattice-release/terraform/aws $output_dir/terraform/
-filter='{"variables": (.variables + {"lattice_tgz_url": {"default": "'"$lattice_tgz_url"'"}})}'
+filter='{"variable": (.variable + {"lattice_tgz_url": {"default": "'"$lattice_tgz_url"'"}})}'
 jq "$filter" terraform-ami-metadata/ami-metadata-v* > $output_dir/terraform/aws/lattice.tf.json
 
 zip -r ${output_dir}.zip "$output_dir"
