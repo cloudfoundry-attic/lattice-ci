@@ -159,40 +159,42 @@ jobs:
           bump: minor
       - get: terraform-ami-metadata
     - aggregate:
-      - task: build-vagrant-images
-        file: lattice-ci/tasks/build-vagrant-images/task.yml
-        config:
+      - do:
+        - task: build-vagrant-images
+          file: lattice-ci/tasks/build-vagrant-images/task.yml
+          config:
+            params:
+              GITHUB_SSH_KEY: {{github-ssh-key}}
+              AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
+              AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
+              ATLAS_TOKEN: {{atlas-api-token}}
+              NAMES: amazon-ebs
+        - put: vagrant-box-commit
           params:
-            GITHUB_SSH_KEY: {{github-ssh-key}}
-            AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
-            AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
-            ATLAS_TOKEN: {{atlas-api-token}}
-            NAMES: amazon-ebs
-      - task: build-terraform-images
-        file: lattice-ci/tasks/build-terraform-images/task.yml
-        config:
+            from: build-vagrant-images/box-commit-v(.*)
+            to: /vagrant/
+        - put: vagrant-box-version
           params:
-            GITHUB_SSH_KEY: {{github-ssh-key}}
-            AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
-            AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
-    - put: vagrant-box-commit
-      params:
-        from: build-vagrant-images/box-commit-v(.*)
-        to: /vagrant/
-    - put: vagrant-box-version
-      params:
-        file: build-vagrant-images/box-version-number
-    - put: terraform-ami-metadata
-      params:
-        from: build-terraform-images/ami-metadata-v(.*)
-        to: /terraform/
-    - put: terraform-ami-commit
-      params:
-        from: build-terraform-images/ami-commit-v(.*)
-        to: /terraform/
-    - put: terraform-ami-version
-      params:
-        file: build-terraform-images/ami-version-number
+            file: build-vagrant-images/box-version-number
+      - do:
+        - task: build-terraform-images
+          file: lattice-ci/tasks/build-terraform-images/task.yml
+          config:
+            params:
+              GITHUB_SSH_KEY: {{github-ssh-key}}
+              AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
+              AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
+        - put: terraform-ami-metadata
+          params:
+            from: build-terraform-images/ami-metadata-v(.*)
+            to: /terraform/
+        - put: terraform-ami-commit
+          params:
+            from: build-terraform-images/ami-commit-v(.*)
+            to: /terraform/
+        - put: terraform-ami-version
+          params:
+            file: build-terraform-images/ami-version-number
 
   - name: unit-test-ltc
     plan:
