@@ -22,6 +22,6 @@ EOF
 
 set -x
 
-pushd $terraform_dir >/dev/null
+pushd "$terraform_dir" >/dev/null
     terraform apply || terraform apply
 popd >/dev/null

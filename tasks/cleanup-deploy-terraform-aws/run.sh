@@ -2,7 +2,8 @@
 
 set -ex
 
-pushd $PWD/deploy-terraform-aws/terraform-tmp
-    terraform get -update
+terraform_dir=$(echo $PWD/lattice-bundle-v*/terraform/aws)
+
+pushd "$terraform_dir" >/dev/null
     terraform destroy -force || terraform destroy -force
-popd
+popd >/dev/null

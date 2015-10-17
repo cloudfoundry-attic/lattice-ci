@@ -2,7 +2,7 @@
 
 set -ex
 
-export AWS_SSH_PRIVATE_KEY_PATH=$PWD/vagrant.pem
+export AWS_SSH_PRIVATE_KEY_PATH=$PWD/key.pem
 echo "$AWS_SSH_PRIVATE_KEY" > "$AWS_SSH_PRIVATE_KEY_PATH"
 
 unzip lattice-bundle-ci/lattice-bundle-v*.zip
