@@ -10,4 +10,4 @@ ARGF.each_line do |line|
   end
 end
 
-print {variable: variables.to_json}.to_json
+puts ({variable: variables}.to_json)
