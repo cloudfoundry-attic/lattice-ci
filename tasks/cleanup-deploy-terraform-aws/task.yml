@@ -1,9 +1,8 @@
 ---
 platform: linux
-image: docker:///cloudfoundry/lattice-pipeline
+image: docker:///cloudfoundry/lattice-ci
 inputs:
 - name: lattice-ci
-- name: lattice
 - name: deploy-terraform-aws
 run:
   path: lattice-ci/tasks/cleanup-deploy-terraform-aws/run.sh
