@@ -3,7 +3,6 @@ platform: linux
 image: docker:///cloudfoundry/lattice-ci
 inputs:
 - name: lattice-ci
-- name: lattice-release
 - name: terraform-image-changes
 - name: current-terraform-ami-version
 - name: next-terraform-ami-version

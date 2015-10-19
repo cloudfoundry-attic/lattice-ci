@@ -160,23 +160,42 @@ jobs:
       - get: terraform-ami-metadata
     - aggregate:
       - do:
-        - task: build-vagrant-images
-          file: lattice-ci/tasks/build-vagrant-images/task.yml
+        - task: build-vagrant-prepare
+          file: lattice-ci/tasks/build-vagrant-prepare/task.yml
           config:
             params:
               GITHUB_SSH_KEY: {{github-ssh-key}}
-              AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
-              AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
               AWS_SSH_PRIVATE_KEY: {{aws-ssh-private-key}}
-              ATLAS_TOKEN: {{atlas-api-token}}
-              REMOTE_EXECUTOR_IP: {{remote-executor-ip}}
+        - do:
+          - aggregate:
+            - task: build-vagrant-images-amazon
+              file: lattice-ci/tasks/build-vagrant-images/task.yml
+              config:
+                params:
+                  AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
+                  AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
+                  ATLAS_TOKEN: {{atlas-api-token}}
+            - task: build-vagrant-images-virtualbox-vmware
+              file: lattice-ci/tasks/build-vagrant-images/task.yml
+              config:
+                params:
+                  ATLAS_TOKEN: {{atlas-api-token}}
+                  REMOTE_EXECUTOR_IP: {{remote-executor-ip}}
+                  NAMES: virtualbox-iso,vmware-iso
+          ensure:
+            task: cleanup-incomplete-build-vagrant
+            file: lattice-ci/tasks/cleanup-incomplete-bundle-vagrant
+            config:
+              params:
+                ATLAS_TOKEN: {{atlas-api-token}}
+                PROVIDERS: aws,virtualbox,vmware_desktop
         - put: vagrant-box-commit
           params:
-            from: build-vagrant-images/box-commit-v(.*)
+            from: build-vagrant-prepare/box-commit-v(.*)
             to: /vagrant/
         - put: vagrant-box-version
           params:
-            file: build-vagrant-images/box-version-number
+            file: build-vagrant-prepare/box-version-number
       - do:
         - task: build-terraform-images
           file: lattice-ci/tasks/build-terraform-images/task.yml

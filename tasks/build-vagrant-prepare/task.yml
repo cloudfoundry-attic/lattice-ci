@@ -1,0 +1,13 @@
+---
+platform: linux
+image: docker:///cloudfoundry/lattice-ci
+inputs:
+- name: lattice-ci
+- name: current-vagrant-box-version
+- name: next-vagrant-box-version
+- name: vagrant-box-commit
+run:
+  path: lattice-ci/tasks/build-vagrant-prepare/run.sh
+params:
+  GITHUB_SSH_KEY: some-github-ssh-key
+  AWS_SSH_PRIVATE_KEY: some-aws-ssh-private-key

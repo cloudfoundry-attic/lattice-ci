@@ -2,18 +2,10 @@
 platform: linux
 image: docker:///cloudfoundry/lattice-ci
 inputs:
-- name: lattice-ci
-- name: lattice-release
-- name: vagrant-image-changes
-- name: current-vagrant-box-version
-- name: next-vagrant-box-version
-- name: vagrant-box-commit
+- name: build-vagrant-prepare
 run:
   path: lattice-ci/tasks/build-vagrant-images/run.sh
 params:
-  GITHUB_SSH_KEY: some-github-ssh-key
-  AWS_ACCESS_KEY_ID: some-aws-access-key-id
-  AWS_SECRET_ACCESS_KEY: some-aws-secret-access-key
-  AWS_SSH_PRIVATE_KEY: some-aws-ssh-private-key
   ATLAS_TOKEN: some-atlas-token
-  REMOTE_EXECUTOR_IP: some-remote-executor-ip
+  REMOTE_EXECUTOR_IP: no-executor
+  NAMES: some-names

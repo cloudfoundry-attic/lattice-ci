@@ -1,0 +1,9 @@
+---
+platform: linux
+image: docker:///cloudfoundry/lattice-ci
+inputs:
+- name: next-vagrant-box-version
+run:
+  path: lattice-ci/tasks/cleanup-incomplete-build-vagrant/run.sh
+params:
+  ATLAS_TOKEN: some-atlas-token
