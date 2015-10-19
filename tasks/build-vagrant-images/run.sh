@@ -12,6 +12,7 @@ ssh-add github_private_key.pem > /dev/null
 rm github_private_key.pem
 
 echo "$AWS_SSH_PRIVATE_KEY" > aws_private_key.pem
+chmod 0600 aws_private_key.pem
 
 current_version=$(cat current-vagrant-box-version/number)
 next_version=$(cat next-vagrant-box-version/number)
