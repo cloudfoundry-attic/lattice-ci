@@ -27,7 +27,8 @@ fi
 git -C vagrant-image-changes submodule update --init --recursive
 
 lattice_json=$(cat vagrant-image-changes/vagrant/lattice.json)
-post_processor_json=$(cat <<EOF
+post_processor_json=`
+cat <<EOF
 {
   "post-processors": [[
     {
@@ -68,15 +69,19 @@ post_processor_json=$(cat <<EOF
     }
   ]]
 }
-EOF)
+EOF
+`
 
 echo $lattice_json | jq '. + '"$post_processor_json" > vagrant-image-changes/vagrant/lattice.json
 
 set -x
 
 remote_tmp="/tmp/build-vagrant-images-$(date "+%Y-%m-%d-%H%M%Su")"
+ssh-keyscan 54.85.98.162 >> $HOME/.ssh/known_hosts
 ssh -i aws_private_key.pem pivotal@54.85.98.162 -p 22222 mkdir -p $remote_tmp
+
 rsync -e "ssh -p 22222 -i aws_private_key.pem" . pivotal@54.85.98.162:$remote_tmp
+
 ssh -i aws_private_key.pem pivotal@54.85.98.162 -p 22222 \
   cd $remote_tmp; \
   vagrant-image-changes/vagrant/build -var "version=$next_version" -only="virtualbox-iso,vmware-iso"
