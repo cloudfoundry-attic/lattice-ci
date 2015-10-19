@@ -76,13 +76,13 @@ echo $lattice_json | jq '. + '"$post_processor_json" > vagrant-image-changes/vag
 
 set -x
 
-remote_tmp="/tmp/build-vagrant-images-$(date "+%Y-%m-%d-%H%M%Su")"
-ssh-keyscan -p 22222 52.4.87.129 >> $HOME/.ssh/known_hosts
-ssh -i aws_private_key.pem pivotal@52.4.87.129 -p 22222 mkdir -p $remote_tmp
+remote_tmp="/tmp/build-vagrant-images-$(date "+%Y-%m-%d-%H%M%S")"
+ssh-keyscan -p 22222 $REMOTE_EXECUTOR_IP >> $HOME/.ssh/known_hosts
+ssh -i aws_private_key.pem pivotal@$REMOTE_EXECUTOR_IP -p 22222 mkdir -p $remote_tmp
 
-rsync -e "ssh -p 22222 -i aws_private_key.pem" . pivotal@52.4.87.129:$remote_tmp
+rsync -e "ssh -p 22222 -i aws_private_key.pem" . pivotal@$REMOTE_EXECUTOR_IP:$remote_tmp
 
-ssh -i aws_private_key.pem pivotal@52.4.87.129 -p 22222 \
+ssh -i aws_private_key.pem pivotal@$REMOTE_EXECUTOR_IP -p 22222 \
   cd $remote_tmp; \
   vagrant-image-changes/vagrant/build -var "version=$next_version" -only="virtualbox-iso,vmware-iso"
 

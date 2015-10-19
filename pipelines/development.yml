@@ -169,6 +169,7 @@ jobs:
               AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
               AWS_SSH_PRIVATE_KEY: {{aws-ssh-private-key}}
               ATLAS_TOKEN: {{atlas-api-token}}
+              REMOTE_EXECUTOR_IP: {{remote-executor-ip}}
         - put: vagrant-box-commit
           params:
             from: build-vagrant-images/box-commit-v(.*)

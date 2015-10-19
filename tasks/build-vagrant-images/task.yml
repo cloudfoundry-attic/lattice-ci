@@ -11,4 +11,9 @@ inputs:
 run:
   path: lattice-ci/tasks/build-vagrant-images/run.sh
 params:
-  ATLAS_TOKEN: some-token
+  GITHUB_SSH_KEY: some-github-ssh-key
+  AWS_ACCESS_KEY_ID: some-aws-access-key-id
+  AWS_SECRET_ACCESS_KEY: some-aws-secret-access-key
+  AWS_SSH_PRIVATE_KEY: some-aws-ssh-private-key
+  ATLAS_TOKEN: some-atlas-token
+  REMOTE_EXECUTOR_IP: some-remote-executor-ip
