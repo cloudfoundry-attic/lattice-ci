@@ -83,7 +83,7 @@ ssh -i aws_private_key.pem pivotal@$REMOTE_EXECUTOR_IP -p 22222 mkdir -p $remote
 
 rsync -a -e "ssh -p 22222 -i aws_private_key.pem" * pivotal@$REMOTE_EXECUTOR_IP:$remote_tmp
 
-ssh -i aws_private_key.pem pivotal@$REMOTE_EXECUTOR_IP -p 22222 <<ENDSSH
+ssh -i aws_private_key.pem pivotal@$REMOTE_EXECUTOR_IP -p 22222 <<ENDSSH &
 export PATH=~/.rbenv/shims:/usr/local/go/bin:~/packer:/usr/local/bin:\$PATH
 cd $remote_tmp
 rbenv local 2.2.3
@@ -91,6 +91,11 @@ vagrant-image-changes/vagrant/build -var "version=$next_version" -only="virtualb
 ENDSSH
 
 vagrant-image-changes/vagrant/build -var "version=$next_version" -only="amazon-ebs"
+fg || true
 
 echo -n $next_box_commit > "box-commit-v$next_version"
 echo -n $next_version > box-version-number
+
+ssh -i aws_private_key.pem pivotal@$REMOTE_EXECUTOR_IP -p 22222 rm -rf $remote_tmp
+rm -f vagrant-image-changes/vagrant/*.box
+rm -rf vagrant-image-changes/vagrant/packer_cache
