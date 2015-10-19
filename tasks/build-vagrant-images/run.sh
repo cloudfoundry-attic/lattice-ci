@@ -84,6 +84,7 @@ ssh -i aws_private_key.pem pivotal@$REMOTE_EXECUTOR_IP -p 22222 mkdir -p $remote
 rsync -a -e "ssh -p 22222 -i aws_private_key.pem" * pivotal@$REMOTE_EXECUTOR_IP:$remote_tmp
 
 ssh -i aws_private_key.pem pivotal@$REMOTE_EXECUTOR_IP -p 22222 <<ENDSSH
+export PATH=/usr/local/go/bin:~/packer:/usr/local/bin:\$PATH
 cd $remote_tmp
 vagrant-image-changes/vagrant/build -var "version=$next_version" -only="virtualbox-iso,vmware-iso"
 ENDSSH
