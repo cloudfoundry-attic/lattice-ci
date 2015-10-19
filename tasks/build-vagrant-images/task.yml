@@ -11,5 +11,4 @@ inputs:
 run:
   path: lattice-ci/tasks/build-vagrant-images/run.sh
 params:
-  NAMES: amazon-ebs,virtualbox-iso,vmware-iso
   ATLAS_TOKEN: some-token

@@ -6,10 +6,12 @@ mkdir -p $HOME/.ssh
 ssh-keyscan github.com >> $HOME/.ssh/known_hosts
 
 eval $(ssh-agent)
-echo "$GITHUB_SSH_KEY" > private_key.pem
-chmod 0600 private_key.pem
-ssh-add private_key.pem > /dev/null
-rm private_key.pem
+echo "$GITHUB_SSH_KEY" > github_private_key.pem
+chmod 0600 github_private_key.pem
+ssh-add github_private_key.pem > /dev/null
+rm github_private_key.pem
+
+echo "$AWS_SSH_PRIVATE_KEY" > aws_private_key.pem
 
 current_version=$(cat current-vagrant-box-version/number)
 next_version=$(cat next-vagrant-box-version/number)
@@ -72,6 +74,14 @@ echo $lattice_json | jq '. + '"$post_processor_json" > vagrant-image-changes/vag
 
 set -x
 
-vagrant-image-changes/vagrant/build -var "version=$next_version" -only=$NAMES
+remote_tmp="/tmp/build-vagrant-images-$(date "+%Y-%m-%d-%H%M%Su")"
+ssh -i aws_private_key.pem pivotal@54.85.98.162 -p 22222 mkdir -p $remote_tmp
+rsync -e "ssh -p 22222 -i aws_private_key.pem" . pivotal@54.85.98.162:$remote_tmp
+ssh -i aws_private_key.pem pivotal@54.85.98.162 -p 22222 \
+  cd $remote_tmp; \
+  vagrant-image-changes/vagrant/build -var "version=$next_version" -only="virtualbox-iso,vmware-iso"
+
+vagrant-image-changes/vagrant/build -var "version=$next_version" -only="amazon-ebs"
+
 echo -n $next_box_commit > "box-commit-v$next_version"
 echo -n $next_version > box-version-number
