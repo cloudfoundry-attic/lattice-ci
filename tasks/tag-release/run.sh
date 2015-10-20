@@ -14,7 +14,7 @@ if [[ $current_commit != $latest_release_commit ]]; then
   exit 1
 fi
 
-git config user.name "Concourse CI"
-git config user.email "pivotal-lattice-eng@pivotal.io"
+git config --global user.name "Concourse CI"
+git config --global user.email "pivotal-lattice-eng@pivotal.io"
 git -C lattice-release tag -f -a "$latest_release_brand" -m "$latest_release_brand"
 git -C lattice-release push -f origin "refs/tags/$latest_release_brand:refs/tags/$latest_release_brand"
