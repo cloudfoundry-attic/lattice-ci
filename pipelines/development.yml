@@ -175,6 +175,7 @@ jobs:
                   AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
                   AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
                   ATLAS_TOKEN: {{atlas-api-token}}
+                  NAMES: amazon-ebs
             - task: build-vagrant-images-virtualbox-vmware
               file: lattice-ci/tasks/build-vagrant-images/task.yml
               config:
@@ -184,7 +185,7 @@ jobs:
                   NAMES: virtualbox-iso,vmware-iso
           ensure:
             task: cleanup-incomplete-build-vagrant
-            file: lattice-ci/tasks/cleanup-incomplete-bundle-vagrant/task.yml
+            file: lattice-ci/tasks/cleanup-incomplete-build-vagrant/task.yml
             config:
               params:
                 ATLAS_TOKEN: {{atlas-api-token}}

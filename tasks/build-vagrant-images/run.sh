@@ -18,6 +18,8 @@ if [[ $REMOTE_EXECUTOR_IP == "no-executor" ]]; then
   exit 0
 fi
 
+mkdir -p $HOME/.ssh/
+
 remote_tmp="/tmp/build-vagrant-images-$(date "+%Y-%m-%d-%H%M%S")"
 ssh-keyscan -p 22222 $REMOTE_EXECUTOR_IP >> $HOME/.ssh/known_hosts
 ssh -i aws_private_key.pem pivotal@$REMOTE_EXECUTOR_IP -p 22222 mkdir -p $remote_tmp
