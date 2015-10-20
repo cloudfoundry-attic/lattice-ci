@@ -32,4 +32,4 @@ tail -50 build.log | lattice-ci/tasks/build-terraform-images/parse-build-output.
 echo -n $next_ami_commit > ami-commit-v$next_version
 echo -n $next_version > ami-version-number
 
-rm -r terraform-image-changes/terraform/packer_cache
+rm -rf terraform-image-changes

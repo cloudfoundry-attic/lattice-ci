@@ -12,9 +12,8 @@ next_version=$(cat next-vagrant-box-version/number)
 if [[ $REMOTE_EXECUTOR_IP == "no-executor" ]]; then
   vagrant-image-changes/vagrant/build -var "version=$next_version" -only=$NAMES
 
-  rm -f vagrant-image-changes/vagrant/*.box
-  rm -rf vagrant-image-changes/vagrant/packer_cache
-
+  cd ..
+  rm -rf build-vagrant-prepare
   exit 0
 fi
 
@@ -35,3 +34,5 @@ vagrant-image-changes/vagrant/build -var "version=$next_version" -only=$NAMES
 ENDSSH
 
 ssh -i aws_private_key.pem pivotal@$REMOTE_EXECUTOR_IP -p 22222 rm -rf $remote_tmp
+cd ..
+rm -rf build-vagrant-prepare
