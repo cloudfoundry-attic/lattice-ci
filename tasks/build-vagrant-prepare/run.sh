@@ -42,7 +42,7 @@ cat <<EOF
       "type": "atlas",
       "only": ["amazon-ebs"],
       "token": "$ATLAS_TOKEN",
-      "artifact": "lattice/collocated",
+      "artifact": "lattice/colocated",
       "artifact_type": "vagrant.box",
       "metadata": {
         "provider": "aws",
@@ -53,7 +53,7 @@ cat <<EOF
       "type": "atlas",
       "only": ["vmware-iso"],
       "token": "$ATLAS_TOKEN",
-      "artifact": "lattice/collocated",
+      "artifact": "lattice/colocated",
       "artifact_type": "vagrant.box",
       "metadata": {
         "provider": "vmware_desktop",
@@ -64,7 +64,7 @@ cat <<EOF
       "type": "atlas",
       "only": ["virtualbox-iso"],
       "token": "$ATLAS_TOKEN",
-      "artifact": "lattice/collocated",
+      "artifact": "lattice/colocated",
       "artifact_type": "vagrant.box",
       "metadata": {
         "provider": "virtualbox",
