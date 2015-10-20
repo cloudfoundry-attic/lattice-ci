@@ -178,6 +178,9 @@ jobs:
           submodules: none
     - task: tag-release
       file: lattice-ci/tasks/tag-release/task.yml
+      config:
+        params:
+          GITHUB_SSH_KEY: {{github-ssh-key}}
 
   - name: build-images
     serial: true

@@ -1,6 +1,19 @@
 #!/bin/bash
 
-set -ex
+set -e
+
+mkdir -p $HOME/.ssh
+ssh-keyscan github.com >> $HOME/.ssh/known_hosts
+
+echo "$GITHUB_SSH_KEY" > github_private_key.pem
+chmod 0600 github_private_key.pem
+eval $(ssh-agent)
+ssh-add github_private_key.pem > /dev/null
+rm github_private_key.pem
+
+ssh-keyscan github.com >> $HOME/.ssh/known_hosts
+
+set -x
 
 current_commit=$(git -C lattice-release rev-parse -q --verify HEAD)
 latest_release_commit=$(git -C version-changes rev-parse -q --verify HEAD)
