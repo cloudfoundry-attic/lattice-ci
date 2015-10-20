@@ -192,7 +192,7 @@ jobs:
                 PROVIDERS: aws,virtualbox,vmware_desktop
         - put: vagrant-box-commit
           params:
-            from: build-vagrant-prepare/box-commit-v(.*)
+            from: /tmp/build/put/build-vagrant-prepare/box-commit-v(.*)
             to: /vagrant/
         - put: vagrant-box-version
           params:
