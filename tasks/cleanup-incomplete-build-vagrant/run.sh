@@ -1,4 +1,4 @@
-#!/bin/
+#!/bin/bash
 
 next_version=$(cat next-vagrant-box-version/number)
 

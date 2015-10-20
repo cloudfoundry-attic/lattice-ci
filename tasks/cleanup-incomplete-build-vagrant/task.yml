@@ -2,6 +2,7 @@
 platform: linux
 image: docker:///cloudfoundry/lattice-ci
 inputs:
+- name: lattice-ci
 - name: next-vagrant-box-version
 run:
   path: lattice-ci/tasks/cleanup-incomplete-build-vagrant/run.sh

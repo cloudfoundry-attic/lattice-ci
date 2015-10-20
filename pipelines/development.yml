@@ -184,7 +184,7 @@ jobs:
                   NAMES: virtualbox-iso,vmware-iso
           ensure:
             task: cleanup-incomplete-build-vagrant
-            file: lattice-ci/tasks/cleanup-incomplete-bundle-vagrant
+            file: lattice-ci/tasks/cleanup-incomplete-bundle-vagrant/task.yml
             config:
               params:
                 ATLAS_TOKEN: {{atlas-api-token}}
