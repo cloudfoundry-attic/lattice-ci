@@ -141,11 +141,19 @@ jobs:
     - aggregate:
       - get: lattice-ci
       - get: lattice-release
+        params:
+          submodules: none
       - get: version-changes
+        params:
+          submodules: none
       - get: vagrant-image-changes
+        params:
+          submodules: none
       - get: terraform-image-changes
+        params:
+          submodules: none
     - task: tag-release
-      file: lattice-ci/tasks/tag-version-bump/task.yml
+      file: lattice-ci/tasks/tag-release/task.yml
 
   - name: build-images
     serial: true

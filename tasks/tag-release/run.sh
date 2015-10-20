@@ -14,5 +14,5 @@ if [[ $current_commit != $latest_release_commit ]]; then
   exit 1
 fi
 
-git tag -am '' $latest_release_brand
-git -C lattice-release push -f --tags
+git -C lattice-release tag -am '' $latest_release_brand
+git -C lattice-release push -f origin "refs/tags/$latest_release_brand:refs/tags/$latest_release_brand"
