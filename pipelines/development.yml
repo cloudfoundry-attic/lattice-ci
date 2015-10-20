@@ -40,6 +40,13 @@ resources:
       - cf-routing-release
       - cf-release
       - cf-lattice.yml
+  - name: version-changes
+    type: git
+    source:
+      uri: git@github.com:sclevine/lattice-release.git
+      branch: master
+      private_key: {{github-ssh-key}}
+      paths: [VERSION]
 
   - name: vagrant-box-version
     type: semver
@@ -128,6 +135,18 @@ resources:
       interval: 1h
 
 jobs:
+  - name: tag-release
+    serial: true
+    plan:
+    - aggregate:
+      - get: lattice-ci
+      - get: lattice-release
+      - get: version-changes
+      - get: vagrant-image-changes
+      - get: terraform-image-changes
+    - task: tag-release
+      file: lattice-ci/tasks/tag-version-bump/task.yml
+
   - name: build-images
     serial: true
     plan:
@@ -135,12 +154,15 @@ jobs:
       - get: lattice-ci
       - get: lattice-release
         trigger: true
+        passed: [tag-release]
         params:
           submodules: none
       - get: vagrant-image-changes
+        passed: [tag-release]
         params:
           submodules: none
       - get: terraform-image-changes
+        passed: [tag-release]
         params:
           submodules: none
       - get: vagrant-box-commit

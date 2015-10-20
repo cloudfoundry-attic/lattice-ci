@@ -1,0 +1,10 @@
+---
+platform: linux
+image: docker:///cloudfoundry/lattice-ci
+inputs:
+- name: lattice-ci
+- name: lattice-release
+- name: version-changes
+run:
+  path: lattice-ci/tasks/tag-release/run.sh
+
