@@ -2,7 +2,7 @@
 
 set -ex
 
-lattice_release_version=$(git -C lattice-release describe --tags --always)
+lattice_release_version=$(git -C lattice-release describe)
 vagrant_box_version=$(cat vagrant-box-version/number)
 lattice_tgz_url=$(cat lattice-tgz/url)
 

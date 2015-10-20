@@ -2,5 +2,5 @@
 
 set -ex
 
-lattice_version=$(git -C lattice-release describe --tags --always)
+lattice_version=$(git -C lattice-release describe)
 ./lattice-release/release/build "lattice-${lattice_version}.tgz"
