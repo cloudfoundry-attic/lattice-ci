@@ -28,6 +28,7 @@ rsync -a -e "ssh -p 22222 -i aws_private_key.pem" * pivotal@$REMOTE_EXECUTOR_IP:
 
 ssh -i aws_private_key.pem pivotal@$REMOTE_EXECUTOR_IP -p 22222 <<ENDSSH
 export PATH=~/.rbenv/shims:/usr/local/go/bin:~/packer:/usr/local/bin:\$PATH
+export ATLAS_TOKEN=$ATLAS_TOKEN
 cd $remote_tmp
 rbenv local 2.2.3
 vagrant-image-changes/vagrant/build -var "version=$next_version" -only=$NAMES
