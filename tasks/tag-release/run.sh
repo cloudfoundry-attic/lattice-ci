@@ -5,7 +5,7 @@ set -ex
 current_commit=$(git -C lattice-release rev-parse -q --verify HEAD)
 latest_release_commit=$(git -C version-changes rev-parse -q --verify HEAD)
 latest_release_tag=$(git -C version-changes describe)
-latest_release_brand=$(cat version-changes/VERSION)
+latest_release_brand=v$(cat version-changes/VERSION)
 
 [[ $latest_release_tag == $latest_release_brand ]] && exit 0
 
@@ -14,5 +14,7 @@ if [[ $current_commit != $latest_release_commit ]]; then
   exit 1
 fi
 
-git -C lattice-release tag -afm '' $latest_release_brand
+git config user.name "Concourse CI"
+git config user.email "pivotal-lattice-eng@pivotal.io"
+git -C lattice-release tag -f -a "$latest_release_brand" -m "$latest_release_brand"
 git -C lattice-release push -f origin "refs/tags/$latest_release_brand:refs/tags/$latest_release_brand"
