@@ -1,15 +1,13 @@
 #!/bin/bash
 
-set -e
+set -ex
 
 cd build-vagrant-prepare
 
-[[ -f should_build ]] && exit 0
+! [[ -f should_build ]] && exit 0
 
 current_version=$(cat current-vagrant-box-version/number)
 next_version=$(cat next-vagrant-box-version/number)
-
-set -x
 
 if [[ $REMOTE_EXECUTOR_IP == "no-executor" ]]; then
   vagrant-image-changes/vagrant/build -var "version=$next_version" -only=$NAMES
