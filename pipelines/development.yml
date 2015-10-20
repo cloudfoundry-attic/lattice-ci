@@ -121,6 +121,29 @@ resources:
       regexp: nightly/lattice-bundle-v(.*).zip
       access_key_id: {{aws-access-key-id}}
       secret_access_key: {{aws-secret-access-key}}
+  - name: lattice-bundle-release
+    type: s3
+    source:
+      bucket: lattice
+      region_name: us-west-2
+      regexp: releases/lattice-bundle-v(.*).zip
+      access_key_id: {{aws-access-key-id}}
+      secret_access_key: {{aws-secret-access-key}}
+
+  - name: release-version
+    type: semver
+    source:
+      bucket: lattice
+      key: releases/version
+      access_key_id: {{aws-access-key-id}}
+      secret_access_key: {{aws-secret-access-key}}
+      region_name: us-west-2
+  - name: github-release
+    type: github-release
+    source:
+      user: sclevine
+      repository: lattice-release
+      access_token: {{github-api-token}}
 
   - name: lattice-tracker
     type: tracker
@@ -141,6 +164,7 @@ jobs:
     - aggregate:
       - get: lattice-ci
       - get: lattice-release
+        trigger: true
         params:
           submodules: none
       - get: version-changes
@@ -463,3 +487,52 @@ jobs:
       params:
         from: lattice-bundle-ci/lattice-bundle-v(.*).zip
         to: /nightly/
+
+  - name: check-for-release
+    plan:
+    - aggregate:
+      - get: lattice-release
+        trigger: true
+        passed:
+        - cluster-test-vagrant-aws
+        - cluster-test-terraform-aws
+        params:
+          submodules: none
+      - get: lattice-bundle-ci
+        passed:
+        - cluster-test-vagrant-aws
+        - cluster-test-terraform-aws
+    - put: release-version
+      params:
+        file: lattice-release/VERSION
+
+  - name: publish-release
+    plan:
+    - aggregate:
+      - get: lattice-ci
+      - get: release-version
+        trigger: true
+        passed: [check-for-release]
+      - get: lattice-release
+        passed: [check-for-release]
+        params:
+          submodules: none
+      - get: lattice-bundle-ci
+        passed: [check-for-release]
+    - task: build-release-tag
+      file: lattice-ci/tasks/build-release-tag/task.yml
+    - aggregate:
+      - put: lattice-bundle-release
+        params:
+          from: lattice-bundle-ci/lattice-bundle-v(.*).zip
+          to: /releases/
+      - put: lattice-bundle-release
+        params:
+          from: lattice-bundle-ci/lattice-bundle-v(.*).zip
+          to: /releases/lattice-bundle-latest.zip
+    - put: github-release
+      params:
+        name: build-release-tag/release-tag
+        tag: build-release-tag/release-tag
+        body: lattice-release/RELEASE_NOTES.md
+        globs: [lattice-bundle-ci/*.zip]
