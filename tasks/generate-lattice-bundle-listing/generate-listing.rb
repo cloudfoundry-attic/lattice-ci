@@ -21,7 +21,12 @@ service.buckets.find(S3_BUCKET).objects.each do |obj|
 
 	objs_by_day[obj.last_modified.to_date] ||= {}
 	objs_by_day[obj.last_modified.to_date][version] ||= []
-	objs_by_day[obj.last_modified.to_date][version] << {:arch => arch, :path => obj.key}
+
+	if arch == 'osx' || arch == 'linux'
+		objs_by_day[obj.last_modified.to_date][version] << {:arch => arch, :path => obj.key}
+	else
+		objs_by_day[obj.last_modified.to_date][version] << {:arch => 'download', :path => obj.key}
+	end		
 end
 
 def binding_from_hash(hash)

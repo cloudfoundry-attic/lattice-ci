@@ -463,6 +463,7 @@ jobs:
 
   - name: publish-nightly
     plan:
+    - get: lattice-ci
     - get: publish-nightly-timer
       trigger: true
     - get: lattice-bundle-ci
@@ -473,6 +474,12 @@ jobs:
       params:
         from: lattice-bundle-ci/lattice-bundle-v(.*).zip
         to: /nightly/
+    - task: generate-lattice-bundle-listing
+      file: lattice-ci/tasks/generate-lattice-bundle-listing/task.yml
+      config:
+        params:
+          AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
+          AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
 
   - name: check-for-release
     plan:
