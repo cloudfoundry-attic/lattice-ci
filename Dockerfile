@@ -5,7 +5,7 @@ ENV PATH /usr/local/go/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bi
 ENV GOROOT /usr/local/go
 ENV GO_VERSION 1.5.1
 ENV VAGRANT_VERSION 1.7.4
-ENV TERRAFORM_VERSION 0.6.3
+ENV TERRAFORM_VERSION 0.6.5
 ENV PACKER_VERSION 0.8.6
 
 RUN \
