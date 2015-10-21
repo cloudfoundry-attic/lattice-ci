@@ -16,17 +16,14 @@ service.buckets.find(S3_BUCKET).objects.each do |obj|
 	next if !obj.key.start_with?('nightly/lattice-bundle')
 	next if obj.key.start_with?('nightly/lattice-bundle-latest-')
 
-	version = /lattice-bundle-(.+?)-[^-]+\.zip$/.match(obj.key)[1]
 	arch = /-([^-]+)\.zip$/.match(obj.key)[1]
+	has_arch = ['osx', 'linux'].include?(arch)
+	regex = ( has_arch ? /lattice-bundle-(.+?)-[^-]+\.zip$/ : /lattice-bundle-(.+?)\.zip$/ )
+	version = regex.match(obj.key)[1]
 
 	objs_by_day[obj.last_modified.to_date] ||= {}
 	objs_by_day[obj.last_modified.to_date][version] ||= []
-
-	if arch == 'osx' || arch == 'linux'
-		objs_by_day[obj.last_modified.to_date][version] << {:arch => arch, :path => obj.key}
-	else
-		objs_by_day[obj.last_modified.to_date][version] << {:arch => 'download', :path => obj.key}
-	end		
+	objs_by_day[obj.last_modified.to_date][version] << {:arch => (has_arch ? arch : 'download'), :path => obj.key}
 end
 
 def binding_from_hash(hash)
