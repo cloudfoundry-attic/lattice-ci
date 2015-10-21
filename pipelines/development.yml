@@ -7,13 +7,13 @@ resources:
   - name: lattice-release
     type: git
     source:
-      uri: git@github.com:sclevine/lattice-release.git
+      uri: git@github.com:cloudfoundry-incubator/lattice-release.git
       branch: master
       private_key: {{github-ssh-key}}
   - name: vagrant-image-changes
     type: git
     source:
-      uri: git@github.com:sclevine/lattice-release.git
+      uri: git@github.com:cloudfoundry-incubator/lattice-release.git
       branch: master
       private_key: {{github-ssh-key}}
       ignore_paths: [vagrant/Vagrantfile]
@@ -28,7 +28,7 @@ resources:
   - name: terraform-image-changes
     type: git
     source:
-      uri: git@github.com:sclevine/lattice-release.git
+      uri: git@github.com:cloudfoundry-incubator/lattice-release.git
       branch: master
       private_key: {{github-ssh-key}}
       ignore_paths: [terraform/aws]
@@ -43,7 +43,7 @@ resources:
   - name: version-changes
     type: git
     source:
-      uri: git@github.com:sclevine/lattice-release.git
+      uri: git@github.com:cloudfoundry-incubator/lattice-release.git
       branch: master
       private_key: {{github-ssh-key}}
       paths: [VERSION]
@@ -141,7 +141,7 @@ resources:
   - name: github-release
     type: github-release
     source:
-      user: sclevine
+      user: cloudfoundry-incubator
       repository: lattice-release
       access_token: {{github-api-token}}
 
