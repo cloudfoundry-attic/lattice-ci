@@ -19,11 +19,17 @@ current_commit=$(git -C lattice-release rev-parse -q --verify HEAD)
 latest_release_commit=$(git -C version-changes rev-parse -q --verify HEAD)
 latest_release_tag=$(git -C version-changes describe)
 latest_release_brand=v$(cat version-changes/VERSION)
+latest_release_version=$(cat github-release/tag)
 
-[[ $latest_release_tag == $latest_release_brand ]] && exit 0
+if [[ $latest_release_tag == $latest_release_brand ]]; then
+  [[ $latest_release_tag == $latest_release_version ]] && exit 0
+  echo "Currently processing release ($latest_release_tag). Please try again "
+  exit 1
+fi
 
 if [[ $current_commit != $latest_release_commit ]]; then
-  echo "ERROR: release (version-bump) commit fetched with future changes. Aborting..."
+  echo "Release (VERSION-changing) commit fetched with future changes."
+  echo "Please push a new release commit without other changes."
   exit 1
 fi
 

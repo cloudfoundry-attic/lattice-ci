@@ -176,6 +176,9 @@ jobs:
       - get: terraform-image-changes
         params:
           submodules: none
+      - get: github-release
+        params:
+          globs: [""]
     - task: tag-release
       file: lattice-ci/tasks/tag-release/task.yml
       config:

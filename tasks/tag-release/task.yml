@@ -5,6 +5,7 @@ inputs:
 - name: lattice-ci
 - name: lattice-release
 - name: version-changes
+- name: github-release
 run:
   path: lattice-ci/tasks/tag-release/run.sh
 params:
