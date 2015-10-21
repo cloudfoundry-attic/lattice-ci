@@ -474,6 +474,7 @@ jobs:
   - name: check-for-release
     plan:
     - aggregate:
+      - get: lattice-ci
       - get: lattice-release
         trigger: true
         passed:
@@ -486,10 +487,10 @@ jobs:
         - cluster-test-vagrant-aws
         - cluster-test-terraform-aws
     - task: build-release-version
-      file: lattice-ci/tasks/build-release-version
+      file: lattice-ci/tasks/build-release-version/task.yml
     - put: release-version
       params:
-        file: lattice-release/VERSION
+        file: build-release-version/release-version
 
   - name: publish-release
     plan:
@@ -519,5 +520,4 @@ jobs:
       params:
         name: build-release-tag/release-tag
         tag: build-release-tag/release-tag
-        body: lattice-release/RELEASE_NOTES.md
         globs: [lattice-bundle-ci/*.zip]
