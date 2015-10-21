@@ -1,0 +1,9 @@
+---
+platform: linux
+image: docker:///cloudfoundry/lattice-ci
+inputs:
+- name: lattice-ci
+- name: lattice-release
+run:
+  path: lattice-ci/tasks/build-release-version/run.sh
+

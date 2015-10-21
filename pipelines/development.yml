@@ -485,6 +485,8 @@ jobs:
         passed:
         - cluster-test-vagrant-aws
         - cluster-test-terraform-aws
+    - task: build-release-version
+      file: lattice-ci/tasks/build-release-version
     - put: release-version
       params:
         file: lattice-release/VERSION
