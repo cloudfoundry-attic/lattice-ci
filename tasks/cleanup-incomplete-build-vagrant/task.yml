@@ -8,3 +8,4 @@ run:
   path: lattice-ci/tasks/cleanup-incomplete-build-vagrant/run.sh
 params:
   ATLAS_TOKEN: some-atlas-token
+  PROVIDERS: some-providers
