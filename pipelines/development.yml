@@ -289,24 +289,7 @@ jobs:
       file: lattice-ci/tasks/unit-test/task.yml
       config:
         params:
-          PACKAGE: github.com/cloudfoundry-incubator/lattice/ltc
-
-  - name: unit-test-cell-helpers
-    plan:
-    - aggregate:
-      - get: lattice-ci
-      - get: lattice-release
-        trigger: true
-        passed: [build-images]
-      - get: vagrant-box-version
-        passed: [build-images]
-      - get: terraform-ami-metadata
-        passed: [build-images]
-    - task: unit-test
-      file: lattice-ci/tasks/unit-test/task.yml
-      config:
-        params:
-          PACKAGE: github.com/cloudfoundry-incubator/lattice/cell-helpers
+          PACKAGE: github.com/cloudfoundry-incubator/ltc
 
   - name: gofmt
     plan:
@@ -316,7 +299,7 @@ jobs:
         trigger: true
         passed: [build-images]
         params:
-          submodules: [src/github.com/cloudfoundry-incubator/lattice]
+          submodules: [src/github.com/cloudfoundry-incubator/ltc]
       - get: vagrant-box-version
         passed: [build-images]
       - get: terraform-ami-metadata
@@ -325,7 +308,7 @@ jobs:
       file: lattice-ci/tasks/gofmt/task.yml
       config:
         params:
-          PACKAGE: github.com/cloudfoundry-incubator/lattice
+          PACKAGE: github.com/cloudfoundry-incubator/ltc
 
   - name: compile-lattice-tgz
     plan:
