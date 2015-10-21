@@ -304,7 +304,7 @@ jobs:
         passed: [build-images]
       - get: terraform-ami-metadata
         passed: [build-images]
-    - task: unit-test
+    - task: gofmt
       file: lattice-ci/tasks/gofmt/task.yml
       config:
         params:
@@ -318,17 +318,14 @@ jobs:
         trigger: true
         passed:
         - unit-test-ltc
-        - unit-test-cell-helpers
         - gofmt
       - get: vagrant-box-version
         passed:
         - unit-test-ltc
-        - unit-test-cell-helpers
         - gofmt
       - get: terraform-ami-metadata
         passed:
         - unit-test-ltc
-        - unit-test-cell-helpers
         - gofmt
     - task: compile-lattice-tgz
       file: lattice-ci/tasks/compile-lattice-tgz/task.yml
