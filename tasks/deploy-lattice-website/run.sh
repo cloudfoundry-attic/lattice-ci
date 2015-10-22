@@ -2,9 +2,13 @@
 
 set -e
 
-echo "$GITHUB_PRIVATE_KEY" > github.key
-chmod 600 github.key
-export GIT_SSH_COMMAND="/usr/bin/ssh -i $PWD/github.key"
+mkdir -p $HOME/.ssh
+ssh-keyscan github.com >> $HOME/.ssh/known_hosts
+
+echo "$GITHUB_PRIVATE_KEY" > github_private_key.pem
+chmod 0600 github_private_key.pem
+
+export GIT_SSH_COMMAND="/usr/bin/ssh -i $PWD/github_private_key.pem"
 
 set -x
 
