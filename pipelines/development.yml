@@ -294,6 +294,20 @@ jobs:
         params:
           PACKAGE: github.com/cloudfoundry-incubator/ltc
 
+  - name: test-receptor
+    plan:
+    - aggregate:
+      - get: lattice-ci
+      - get: lattice-release
+        trigger: true
+        passed: [build-images]
+      - get: vagrant-box-version
+        passed: [build-images]
+      - get: terraform-ami-metadata
+        passed: [build-images]
+    - task: test-receptor
+      file: lattice-ci/tasks/test-receptor/task.yml
+
   - name: gofmt
     plan:
     - aggregate:
@@ -321,14 +335,17 @@ jobs:
         trigger: true
         passed:
         - unit-test-ltc
+        - test-receptor
         - gofmt
       - get: vagrant-box-version
         passed:
         - unit-test-ltc
+        - test-receptor
         - gofmt
       - get: terraform-ami-metadata
         passed:
         - unit-test-ltc
+        - test-receptor
         - gofmt
     - task: compile-lattice-tgz
       file: lattice-ci/tasks/compile-lattice-tgz/task.yml

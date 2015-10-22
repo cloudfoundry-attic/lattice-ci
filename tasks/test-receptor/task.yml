@@ -1,0 +1,8 @@
+---
+platform: linux
+image: docker:///cloudfoundry/lattice-ci
+inputs:
+- name: lattice-ci
+- name: lattice-release
+run:
+  path: lattice-ci/tasks/test-receptor/run.sh

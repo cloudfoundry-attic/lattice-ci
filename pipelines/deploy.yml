@@ -35,7 +35,7 @@ jobs:
       file: lattice-ci/tasks/deploy-lattice-website/task.yml
       config:
         params:
-          GITHUB_PRIVATE_KEY: {{github-ssh-key}}
+          GITHUB_SSH_KEY: {{github-ssh-key}}
 
   - name: docker-push-lattice-ci
     plan:

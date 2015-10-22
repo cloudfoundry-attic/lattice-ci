@@ -7,4 +7,4 @@ inputs:
 run:
   path: lattice-ci/tasks/deploy-lattice-website/run.sh
 params:
-  GITHUB_PRIVATE_KEY: some-private-key
+  GITHUB_SSH_KEY: some-ssh-key
