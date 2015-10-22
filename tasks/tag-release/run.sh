@@ -23,7 +23,12 @@ latest_release_version=$(cat github-release/tag)
 
 if [[ $latest_release_tag == $latest_release_brand ]]; then
   [[ $latest_release_tag == $latest_release_version ]] && exit 0
-  echo "Currently processing release ($latest_release_tag). Please try again "
+  echo "Currently processing release ($latest_release_tag). Please try again."
+  exit 1
+fi
+
+if [[ $latest_release_brand == $latest_release_version ]]; then
+  echo "This version has already been released. Please use a new version number."
   exit 1
 fi
 
