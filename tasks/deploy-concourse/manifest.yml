@@ -14,7 +14,7 @@ networks:
   - name: concourse
     type: manual
     subnets:
-      - range: 10.0.32.0/20
+      - range: 10.0.2.0/20
         reserved: [10.0.32.2 - 10.0.32.9]
         static:
           - &discovery_static_ip 10.0.32.10
