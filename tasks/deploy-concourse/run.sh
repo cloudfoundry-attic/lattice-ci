@@ -1,4 +1,5 @@
 #!/bin/bash
+set -ex
 
 curl -L -J -O https://bosh.io/d/github.com/concourse/concourse?v=$CONCOURSE_VERSION
 curl -L -J -O https://bosh.io/d/github.com/cloudfoundry-incubator/garden-linux-release?v=$GARDEN_LINUX_VERSION
