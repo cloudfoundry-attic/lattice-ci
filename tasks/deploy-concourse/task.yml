@@ -1,0 +1,16 @@
+---
+platform: linux
+image: docker:///cloudfoundry/lattice-ci
+inputs:
+- name: lattice-ci
+run:
+  path: lattice-ci/tasks/deploy-concourse/run.sh
+params:
+  CONCOURSE_USER: some-concourse-user
+  CONCOURSE_PASSWORD: concourse-password
+  CONCOURSE_VERSION: 0
+  GARDEN_LINUX_VERSION: 0
+  CLOUDFORMATION_STACK_NAME: some-stack-name
+  AWS_DEFAULT_REGION: some-aws-region
+  AWS_ACCESS_KEY_ID: aws-access-key-id
+  AWS_SECRET_ACCESS_KEY: aws-secret-access-key
