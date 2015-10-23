@@ -1,9 +1,9 @@
 #!/bin/bash
 set -ex
 
-curl -L -J -O https://bosh.io/d/github.com/concourse/concourse?v=$CONCOURSE_VERSION
-curl -L -J -O https://bosh.io/d/github.com/cloudfoundry-incubator/garden-linux-release?v=$GARDEN_LINUX_VERSION
-curl -L -J -O https://bosh.io/d/stemcells/bosh-aws-xen-hvm-ubuntu-trusty-go_agent
+function get_stack_output() {
+  echo "$STACK_INFO" | jq -r "[ .Stacks[0].Outputs[] | { (.OutputKey): .OutputValue } | .$1 ] | add"
+}
 
 export STACK_INFO=`aws cloudformation describe-stacks --stack-name "$CLOUDFORMATION_STACK_NAME"`
 

@@ -91,6 +91,6 @@ jobs:
         manifest: deploy-concourse/manifest.yml
         releases:
         - concourse-release/concourse-*.tgz
-        - concourse-release/garden-linux-release-*.tgz
+        - concourse-release/garden-linux-*.tgz
         stemcells:
         - stemcell/*.tgz
