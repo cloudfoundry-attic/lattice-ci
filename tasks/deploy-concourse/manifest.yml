@@ -14,12 +14,12 @@ networks:
   - name: concourse
     type: manual
     subnets:
-      - range: 10.0.16.0/20
-        reserved: [10.0.16.2 - 10.0.16.9]
+      - range: 10.0.32.0/20
+        reserved: [10.0.32.2 - 10.0.32.9]
         static:
-          - &discovery_static_ip 10.0.16.10
+          - &discovery_static_ip 10.0.32.10
         dns: [10.0.0.2]
-        gateway: 10.0.16.1
+        gateway: 10.0.32.1
         cloud_properties:
           security_groups: [SECURITY_GROUP_NAME]
           subnet: PRIVATE_SUBNET_ID
