@@ -1,6 +1,6 @@
 ---
 platform: linux
-image: docker:///cloudfoundry/lattice-ci
+image: docker:///cloudfoundry/lattice-bosh
 inputs:
 - name: lattice-ci
 run:
