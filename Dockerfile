@@ -7,6 +7,7 @@ ENV GO_VERSION 1.5.1
 ENV VAGRANT_VERSION 1.7.4
 ENV TERRAFORM_VERSION 0.6.5
 ENV PACKER_VERSION 0.8.6
+ENV BOSH_INIT_VERSION 0.0.77
 
 RUN \
   apt-get -qqy update && \
@@ -38,3 +39,13 @@ RUN \
   unzip packer_${PACKER_VERSION}_linux_amd64.zip -d /usr/local/packer && \
   rm -f packer_${PACKER_VERSION}_linux_amd64.zip && \
   cd /usr/local/bin && ln -s /usr/local/packer/* .
+
+RUN \
+  wget --quiet "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" && \
+  unzip awscli-bundle.zip && \
+  ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws && \
+  rm -rf awscli-bundle.zip awscli-bundle
+
+RUN \
+  wget --quiet -O /usr/local/bin/bosh-init "https://s3.amazonaws.com/bosh-init-artifacts/bosh-init-${BOSH_INIT_VERSION}-linux-amd64" && \
+  chmod +x /usr/local/bin/bosh-init
