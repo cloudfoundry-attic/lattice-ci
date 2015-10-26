@@ -63,6 +63,19 @@ jobs:
         build: lattice-ci
         push: true
 
+  - name: deploy-bosh
+    serial: true
+    plan:
+    - get: lattice-ci
+    - task: deploy-bosh
+      file: lattice-ci/tasks/deploy-bosh/task.yml
+      config:
+        params:
+          CLOUDFORMATION_STACK_NAME: bosh-ci
+          AWS_DEFAULT_REGION: us-east-1
+          AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
+          AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
+
   - name: deploy-concourse
     serial: true
     plan:
@@ -74,21 +87,20 @@ jobs:
           globs:
           - concourse-*.tgz
           - garden-linux-*.tgz
-      - task: deploy-concourse
-        file: lattice-ci/tasks/deploy-concourse/task.yml
+      - task: generate-concourse-manifest
+        file: lattice-ci/tasks/generate-concourse-manifest/task.yml
         config:
           params:
-            CONCOURSE_USER: {{concourse-user}}
+            CONCOURSE_USERNAME: {{concourse-username}}
             CONCOURSE_PASSWORD: {{concourse-password}}
-            CLOUDFORMATION_STACK_NAME: ci
+            CLOUDFORMATION_STACK_NAME: bosh-ci
             AWS_DEFAULT_REGION: us-east-1
             AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
             AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
             BOSH_UUID: {{concourse-bosh-uuid}}
-            BOSH_PASSWORD: {{concourse-bosh-password}}
     - put: concourse-deployment
       params:
-        manifest: deploy-concourse/manifest.yml
+        manifest: generate-concourse-manifest/manifest.yml
         releases:
         - concourse-release/concourse-*.tgz
         - concourse-release/garden-linux-*.tgz

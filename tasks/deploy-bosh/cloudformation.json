@@ -3,6 +3,33 @@
 
   "Description": "Infrastructure for a MicroBOSH deployment with an ELB.",
 
+  "Outputs": {
+    "BOSHSecurityGroupID": {
+      "Description": "BOSH security group ID",
+      "Value": {"Ref": "BOSHSecurityGroup"}
+    },
+    "BOSHSubnetID": {
+      "Description": "BOSH subnet ID",
+      "Value": {"Ref": "BOSHSubnet"}
+    },
+    "InternalSubnetID": {
+      "Description": "Internal subnet ID",
+      "Value": {"Ref": "InternalSubnet"}
+    },
+    "WebELBLoadBalancerName": {
+      "Description": "Concourse web ELB",
+      "Value": {"Ref": "WebELBLoadBalancer"}
+    },
+    "MicroEIP": {
+      "Description": "BOSH EIP",
+      "Value": {"Ref": "MicroEIP"}
+    },
+    "AvailabilityZone": {
+      "Description": "BOSH subnet availability zone",
+      "Value": {"Fn::GetAtt": ["BOSHSubnet", "AvailabilityZone"]}
+    }
+  },
+
   "Parameters": {
     "KeyName": {
       "Description": "SSH Keypair to use for instances",

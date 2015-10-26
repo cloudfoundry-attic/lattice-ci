@@ -18,7 +18,7 @@ resource_pools:
   cloud_properties:
     instance_type: m3.xlarge
     ephemeral_disk: {size: 25_000, type: gp2}
-    availability_zone: AVAILABILITY-ZONE # <--- Replace with Availability Zone
+    availability_zone: AVAILABILITY-ZONE 
 
 disk_pools:
 - name: disks
@@ -32,7 +32,7 @@ networks:
   - range: 10.0.0.0/24
     gateway: 10.0.0.1
     dns: [10.0.0.2]
-    cloud_properties: {subnet: SUBNET-ID} # <--- Replace with Subnet ID
+    cloud_properties: {subnet: SUBNET-ID}
 - name: public
   type: vip
 
@@ -58,7 +58,7 @@ jobs:
     static_ips: [10.0.0.6]
     default: [dns, gateway]
   - name: public
-    static_ips: [ELASTIC-IP] # <--- Replace with Elastic IP
+    static_ips: [ELASTIC-IP]
 
   properties:
     nats:
@@ -113,8 +113,8 @@ jobs:
       resurrector_enabled: true
 
     aws: &aws
-      access_key_id: ACCESS-KEY-ID # <--- Replace with AWS Access Key ID
-      secret_access_key: SECRET-ACCESS-KEY # <--- Replace with AWS Secret Key
+      access_key_id: ACCESS-KEY-ID
+      secret_access_key: SECRET-ACCESS-KEY
       default_key_name: bosh
       default_security_groups: [bosh]
       region: us-east-1
@@ -127,10 +127,10 @@ cloud_provider:
   template: {name: aws_cpi, release: bosh-aws-cpi}
 
   ssh_tunnel:
-    host: ELASTIC-IP # <--- Replace with your Elastic IP address
+    host: ELASTIC-IP
     port: 22
     user: vcap
-    private_key: ./bosh.pem # Path relative to this manifest file
+    private_key: ./bosh.pem
 
   mbus: "https://mbus:mbus-password@ELASTIC-IP:6868" # <--- Replace with Elastic IP
 

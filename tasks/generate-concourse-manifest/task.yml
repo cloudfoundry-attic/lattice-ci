@@ -4,8 +4,11 @@ image: docker:///cloudfoundry/lattice-ci
 inputs:
 - name: lattice-ci
 run:
-  path: lattice-ci/tasks/deploy-bosh/run.sh
+  path: lattice-ci/tasks/generate-concourse-manifest/run.sh
 params:
+  CONCOURSE_USERNAME: some-concourse-username
+  CONCOURSE_PASSWORD: some-concourse-password
+  BOSH_UUID: some-uuid
   CLOUDFORMATION_STACK_NAME: some-stack-name
   AWS_DEFAULT_REGION: some-aws-region
   AWS_ACCESS_KEY_ID: some-aws-access-key-id
