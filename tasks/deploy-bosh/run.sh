@@ -2,7 +2,7 @@
 
 set -ex
 
-aws cloudformation create-stack --stack-name "$CLOUDFORMATION_STACK_NAME" --template-body "file://$PWD/cloudformation.json"
+aws cloudformation create-stack --stack-name "$CLOUDFORMATION_STACK_NAME" --template-body "file://lattice-ci/tasks/deploy-bosh/cloudformation.json"
 
 while true; do
   STACK_INFO=$(aws cloudformation describe-stacks --stack-name "$CLOUDFORMATION_STACK_NAME")
