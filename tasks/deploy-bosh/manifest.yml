@@ -34,7 +34,6 @@ networks:
     dns: [10.0.0.2]
     cloud_properties:
       subnet: SUBNET-ID
-      security_groups: [SECURITY-GROUP-NAME]
 - name: public
   type: vip
 
@@ -118,7 +117,7 @@ jobs:
       access_key_id: ACCESS-KEY-ID
       secret_access_key: SECRET-ACCESS-KEY
       default_key_name: bosh
-      default_security_groups: [bosh]
+      default_security_groups: [SECURITY-GROUP-NAME]
       region: us-east-1
 
     agent: {mbus: "nats://nats:nats-password@10.0.0.6:4222"}
@@ -134,7 +133,7 @@ cloud_provider:
     user: vcap
     private_key: ./bosh.pem
 
-  mbus: "https://mbus:mbus-password@ELASTIC-IP:6868" # <--- Replace with Elastic IP
+  mbus: "https://mbus:mbus-password@ELASTIC-IP:6868"
 
   properties:
     aws: *aws
