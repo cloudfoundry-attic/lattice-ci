@@ -5,7 +5,7 @@ set -ex
 TEMPLATE_PATH=$PWD/lattice-ci/tasks/deploy-bosh/cloudformation.json
 
 if aws cloudformation describe-stacks --stack-name "$CLOUDFORMATION_STACK_NAME" >/dev/null 2>/dev/null; then
-  aws cloudformation update-stack --stack-name "$CLOUDFORMATION_STACK_NAME" --template-body "file://$TEMPLATE_PATH"
+  aws cloudformation update-stack --stack-name "$CLOUDFORMATION_STACK_NAME" --template-body "file://$TEMPLATE_PATH" || true
 else
   aws cloudformation create-stack --stack-name "$CLOUDFORMATION_STACK_NAME" --template-body "file://$TEMPLATE_PATH"
 fi
