@@ -12,9 +12,6 @@ fi
 
 while true; do
   STACK_INFO=$(aws cloudformation describe-stacks --stack-name "$CLOUDFORMATION_STACK_NAME")
-
-  echo "$STACK_INFO" > /tmp/stackinfo.json
-
   STATUS=$(echo "$STACK_INFO" | jq -r .Stacks[0].StackStatus)
 
   if [[ ${PIPESTATUS[0]} != 0 ]]; then
@@ -47,7 +44,7 @@ function get_stack_output() {
 ELASTIC_IP=$(get_stack_output MicroEIP)
 SUBNET_ID=$(get_stack_output BOSHSubnetID)
 AVAILABILITY_ZONE=$(get_stack_output AvailabilityZone)
-SECURITY_GROUP_ID=$(get_stack_output SecurityGroupID)
+SECURITY_GROUP_ID=$(get_stack_output BOSHSecurityGroup)
 SECURITY_GROUP_NAME=$(aws ec2 describe-security-groups --group-ids=$SECURITY_GROUP_ID | jq -r .SecurityGroups[0].GroupName)
 
 cp lattice-ci/tasks/deploy-bosh/manifest.yml .
