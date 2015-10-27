@@ -16,7 +16,7 @@ RUN \
   add-apt-repository -y ppa:git-core/ppa && \
   apt-get -qqy update && \
   apt-get -qqy install \
-  build-essential ruby2.2 ruby2.2-dev zlib1g-dev python git \
+  build-essential ruby2.2 ruby2.2-dev zlib1g-dev python git libssl-dev \
   zip unzip curl wget \
   silversearcher-ag git jq uuid && \
   gem install -q --no-rdoc --no-ri bundler json bosh_cli
