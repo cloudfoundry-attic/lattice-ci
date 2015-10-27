@@ -131,7 +131,7 @@ cloud_provider:
     host: ELASTIC-IP
     port: 22
     user: vcap
-    private_key: ./bosh.pem
+    private_key: bosh.pem
 
   mbus: "https://mbus:mbus-password@ELASTIC-IP:6868"
 

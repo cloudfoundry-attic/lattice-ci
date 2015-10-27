@@ -1,6 +1,10 @@
 #!/bin/bash
 
-set -ex
+set -e
+
+echo "$BOSH_PRIVATE_KEY" > bosh.pem
+
+set -x
 
 TEMPLATE_PATH=$PWD/lattice-ci/tasks/deploy-bosh/cloudformation.json
 

@@ -10,3 +10,4 @@ params:
   AWS_DEFAULT_REGION: some-aws-region
   AWS_ACCESS_KEY_ID: some-aws-access-key-id
   AWS_SECRET_ACCESS_KEY: some-aws-secret-access-key
+  BOSH_PRIVATE_KEY: some-bosh-private-key

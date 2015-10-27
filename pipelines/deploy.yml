@@ -75,6 +75,7 @@ jobs:
           AWS_DEFAULT_REGION: us-east-1
           AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
           AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
+          BOSH_PRIVATE_KEY: {{concourse-bosh-private-key}}
 
   - name: deploy-concourse
     serial: true
