@@ -33,8 +33,8 @@ networks:
     gateway: 10.0.0.1
     dns: [10.0.0.2]
     cloud_properties:
-			subnet: SUBNET-ID
-			security_groups: [SECURITY-GROUP-NAME]
+      subnet: SUBNET-ID
+      security_groups: [SECURITY-GROUP-NAME]
 - name: public
   type: vip
 

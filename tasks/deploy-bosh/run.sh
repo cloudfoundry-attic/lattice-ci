@@ -12,6 +12,9 @@ fi
 
 while true; do
   STACK_INFO=$(aws cloudformation describe-stacks --stack-name "$CLOUDFORMATION_STACK_NAME")
+
+  echo "$STACK_INFO" > /tmp/stackinfo.json
+
   STATUS=$(echo "$STACK_INFO" | jq -r .Stacks[0].StackStatus)
 
   if [[ ${PIPESTATUS[0]} != 0 ]]; then
