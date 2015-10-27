@@ -2,7 +2,13 @@
 
 set -ex
 
-aws cloudformation create-stack --stack-name "$CLOUDFORMATION_STACK_NAME" --template-body "file://lattice-ci/tasks/deploy-bosh/cloudformation.json"
+TEMPLATE_PATH=$PWD/lattice-ci/tasks/deploy-bosh/cloudformation.json
+
+if aws cloudformation describe-stacks --stack-name "$CLOUDFORMATION_STACK_NAME" >/dev/null 2>/dev/null; then
+  aws cloudformation update-stack --stack-name "$CLOUDFORMATION_STACK_NAME" --template-body "file://$TEMPLATE_PATH"
+else
+  aws cloudformation create-stack --stack-name "$CLOUDFORMATION_STACK_NAME" --template-body "file://$TEMPLATE_PATH"
+fi
 
 while true; do
   STACK_INFO=$(aws cloudformation describe-stacks --stack-name "$CLOUDFORMATION_STACK_NAME")
@@ -25,7 +31,7 @@ while true; do
 
   if [[ $STATUS = "CREATE_COMPLETE" ]] ; then
     echo "$STATUS"
-    return
+    break
   fi
 
   sleep 5
