@@ -13,9 +13,10 @@ RUN \
   apt-get -qqy update && \
   apt-get -qqy install software-properties-common && \
   add-apt-repository -y ppa:brightbox/ruby-ng && \
+  add-apt-repository -y ppa:git-core/ppa && \
   apt-get -qqy update && \
   apt-get -qqy install \
-  build-essential ruby2.2 ruby2.2-dev zlib1g-dev python \
+  build-essential ruby2.2 ruby2.2-dev zlib1g-dev python git \
   zip unzip curl wget \
   silversearcher-ag git jq uuid && \
   gem install -q --no-rdoc --no-ri bundler json bosh_cli
@@ -49,3 +50,9 @@ RUN \
 RUN \
   wget --quiet -O /usr/local/bin/bosh-init "https://s3.amazonaws.com/bosh-init-artifacts/bosh-init-${BOSH_INIT_VERSION}-linux-amd64" && \
   chmod +x /usr/local/bin/bosh-init
+
+RUN \
+  mkdir -p $HOME/.ssh && \
+  ssh-keyscan github.com >> $HOME/.ssh/known_hosts && \
+  git config --global user.email "pivotal-lattice-eng@pivotal.io" && \
+  git config --global user.name "Concourse CI"
