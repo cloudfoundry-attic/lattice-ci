@@ -44,6 +44,8 @@ function get_stack_output() {
 ELASTIC_IP=$(get_stack_output MicroEIP)
 SUBNET_ID=$(get_stack_output BOSHSubnetID)
 AVAILABILITY_ZONE=$(get_stack_output AvailabilityZone)
+SECURITY_GROUP_ID=$(get_stack_output SecurityGroupID)
+SECURITY_GROUP_NAME=$(aws ec2 describe-security-groups --group-ids=$SECURITY_GROUP_ID | jq -r .SecurityGroups[0].GroupName)
 
 cp lattice-ci/tasks/deploy-bosh/manifest.yml .
 
@@ -52,5 +54,6 @@ sed -i "s/ELASTIC-IP/$ELASTIC_IP/g" manifest.yml
 sed -i "s/ACCESS-KEY-ID/$AWS_ACCESS_KEY_ID/g" manifest.yml
 sed -i "s/SECRET-ACCESS-KEY/$AWS_SECRET_ACCESS_KEY/g" manifest.yml
 sed -i "s/SUBNET-ID/$SUBNET_ID/g" manifest.yml
+sed -i "s/SECURITY-GROUP-NAME/$SECURITY_GROUP_NAME/g" manifest.yml
 
 bosh-init deploy manifest.yml
