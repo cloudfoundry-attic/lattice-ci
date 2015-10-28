@@ -6,7 +6,7 @@ director_uuid: BOSH_UUID
 atc_db_name: &atc-db-name atc
 atc_db_role: &atc-db-role
   name: atc
-  password: CONCOURSE_PASSWORD 
+  password: CONCOURSE_PASSWORD
 
 availability_zone: &az us-east-1a
 
@@ -55,17 +55,12 @@ jobs:
     networks: [{name: concourse}]
     properties:
       atc:
-        publicly_viewable: true 
-        basic_auth_username: CONCOURSE_USERNAME 
-        basic_auth_password: CONCOURSE_PASSWORD 
+        publicly_viewable: true
+        basic_auth_username: CONCOURSE_USERNAME
+        basic_auth_password: CONCOURSE_PASSWORD
         postgresql:
           database: *atc-db-name
           role: *atc-db-role
-
-      tsa:
-        atc:
-          username: CONCOURSE_USERNAME 
-          password: CONCOURSE_PASSWORD 
 
       consul:
         agent:
