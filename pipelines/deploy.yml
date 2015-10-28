@@ -29,6 +29,7 @@ resources:
     source:
       repository: concourse
       user: concourse
+      access_token: {{github-api-token}}
   - name: stemcell
     type: bosh-io-stemcell
     source:
