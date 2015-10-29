@@ -73,6 +73,7 @@ jobs:
       config:
         params:
           CLOUDFORMATION_STACK_NAME: concourse
+          CERTIFICATE_NAME: {{concourse-certificate-name}}
           AWS_DEFAULT_REGION: us-east-1
           AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
           AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}

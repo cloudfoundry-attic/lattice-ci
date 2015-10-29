@@ -40,7 +40,6 @@
       "Type": "AWS::EC2::KeyPair::KeyName",
       "Default": "bosh"
     },
-
     "HostedZoneName": {
       "Description": "(Optional) Route53 Hosted Zone in which to register the ELB's DNS record.",
       "Type": "String",
@@ -51,13 +50,11 @@
       "Type": "String",
       "Default": ""
     },
-
     "BOSHInboundCIDR": {
       "Description": "CIDR to permit access to BOSH (e.g. 205.103.216.37/32 for your specific IP)",
       "Type": "String",
       "Default": "0.0.0.0/0"
     },
-
     "VPCCIDR": {
       "Description": "CIDR block for the VPC.",
       "Type": "String",
@@ -77,6 +74,11 @@
       "Description": "CIDR block for the Internal subnet.",
       "Type": "String",
       "Default": "10.0.16.0/20"
+    },
+    "LoadBalancerCertName": {
+      "Description": "Name of the SSL cert to use for the ELB.",
+      "Type": "String",
+      "Default": ""
     }
   },
 
@@ -236,6 +238,12 @@
             "IpProtocol": "tcp",
             "FromPort": "2222",
             "ToPort": "2222"
+          },
+          {
+            "CidrIp": "0.0.0.0/0",
+            "IpProtocol": "tcp",
+            "FromPort": "443",
+            "ToPort": "443"
           }
         ]
       }
@@ -413,6 +421,27 @@
             "LoadBalancerPort": "2222",
             "InstanceProtocol": "tcp",
             "InstancePort": "2222"
+          },
+          {
+            "Protocol" : "ssl",
+            "LoadBalancerPort" : "443",
+            "InstanceProtocol": "tcp",
+            "InstancePort" : "8080",
+            "SSLCertificateId" : {
+              "Fn::Join":[
+                "",
+                [
+                  "arn:aws:iam::",
+                  {
+                    "Ref":"AWS::AccountId"
+                  },
+                  ":server-certificate/",
+                  {
+                    "Ref":"LoadBalancerCertName"
+                  }
+                ]
+              ]
+            }
           }
         ]
       }
