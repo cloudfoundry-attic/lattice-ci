@@ -134,6 +134,7 @@
     "BOSHSecurityGroupTCPIngress": {
       "Type": "AWS::EC2::SecurityGroupIngress",
       "Properties": {
+        "GroupId": { "Ref": "BOSHSecurityGroup" },
         "SourceSecurityGroupId": { "Ref": "BOSHSecurityGroup" },
         "IpProtocol": "tcp",
         "FromPort": "0",
