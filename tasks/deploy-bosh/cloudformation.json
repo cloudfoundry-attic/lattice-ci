@@ -51,7 +51,7 @@
     "BOSHInboundCIDR": {
       "Description": "CIDR to permit access to BOSH (e.g. 205.103.216.37/32 for your specific IP)",
       "Type": "String",
-      "Default": "0.0.0.0/0"
+      "Default": "10.0.0.0/16"
     },
 
     "VPCCIDR": {
