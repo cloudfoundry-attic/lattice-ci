@@ -155,19 +155,19 @@
             "ToPort": "8080"
           },
           {
-            "CidrIp": {"Fn::Join": ["/", { "Ref": "NATEIP" }, "32"]},
+            "CidrIp": { "Fn::Join": [ "/", [ { "Ref": "NATEIP" }, "32" ] ] },
             "IpProtocol": "tcp",
             "FromPort": "22",
             "ToPort": "22"
           },
           {
-            "CidrIp": {"Fn::Join": ["/", { "Ref": "NATEIP" }, "32"]},
+            "CidrIp": { "Fn::Join": [ "/", [ { "Ref": "NATEIP" }, "32" ] ] },
             "IpProtocol": "tcp",
             "FromPort": "6868",
             "ToPort": "6868"
           },
           {
-            "CidrIp": {"Fn::Join": ["/", { "Ref": "NATEIP" }, "32"]},
+            "CidrIp": { "Fn::Join": [ "/", [ { "Ref": "NATEIP" }, "32" ] ] },
             "IpProtocol": "tcp",
             "FromPort": "25555",
             "ToPort": "25555"
