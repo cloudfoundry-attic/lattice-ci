@@ -19,9 +19,9 @@ ELB_NAME=$(get_stack_output WebELBLoadBalancerName)
 
 cp lattice-ci/tasks/generate-concourse-manifest/manifest.yml .
 
-sed -i "s/BOSH_UUID/$BOSH_UUID/g" manifest.yml
-sed -i "s/CONCOURSE_USERNAME/$CONCOURSE_USERNAME/g" manifest.yml
-sed -i "s/CONCOURSE_PASSWORD/$CONCOURSE_PASSWORD/g" manifest.yml
-sed -i "s/SECURITY_GROUP_NAME/$SECURITY_GROUP_NAME/g" manifest.yml
-sed -i "s/PRIVATE_SUBNET_ID/$PRIVATE_SUBNET_ID/g" manifest.yml
-sed -i "s/ELB_NAME/$ELB_NAME/g" manifest.yml
+sed -i "s/BOSH-UUID/$BOSH_UUID/g" manifest.yml
+sed -i "s/CONCOURSE-USERNAME/$CONCOURSE_USERNAME/g" manifest.yml
+sed -i "s/CONCOURSE-PASSWORD/$CONCOURSE_PASSWORD/g" manifest.yml
+sed -i "s/SECURITY-GROUP-NAME/$SECURITY_GROUP_NAME/g" manifest.yml
+sed -i "s/PRIVATE-SUBNET-ID/$PRIVATE_SUBNET_ID/g" manifest.yml
+sed -i "s/ELB-NAME/$ELB_NAME/g" manifest.yml
