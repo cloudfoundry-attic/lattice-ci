@@ -40,7 +40,7 @@ resources:
       target: {{concourse-bosh-target}}
       username: admin
       password: {{concourse-bosh-password}}
-      deployment: concourse-test
+      deployment: concourse
 
 jobs:
   - name: deploy-lattice-website
