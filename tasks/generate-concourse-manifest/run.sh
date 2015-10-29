@@ -12,6 +12,9 @@ SECURITY_GROUP_NAME=$(aws ec2 describe-security-groups --group-ids=$SECURITY_GRO
 PRIVATE_SUBNET_ID=$(get_stack_output InternalSubnetID)
 ELB_NAME=$(get_stack_output WebELBLoadBalancerName)
 
+bosh -t "$BOSH_TARGET" login admin "$BOSH_PASSWORD"
+BOSH_UUID=$(bosh -n --color -t "$BOSH_TARGET" status --uuid)
+
 cp lattice-ci/tasks/generate-concourse-manifest/manifest.yml .
 
 sed -i "s/BOSH_UUID/$BOSH_UUID/g" manifest.yml

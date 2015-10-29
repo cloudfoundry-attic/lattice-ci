@@ -8,8 +8,9 @@ run:
 params:
   CONCOURSE_USERNAME: some-concourse-username
   CONCOURSE_PASSWORD: some-concourse-password
-  BOSH_UUID: some-uuid
   CLOUDFORMATION_STACK_NAME: some-stack-name
   AWS_DEFAULT_REGION: some-aws-region
   AWS_ACCESS_KEY_ID: some-aws-access-key-id
   AWS_SECRET_ACCESS_KEY: some-aws-secret-access-key
+  BOSH_TARGET: some-bosh-target
+  BOSH_PASSWORD: some-bosh-password

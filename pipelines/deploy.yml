@@ -113,7 +113,8 @@ jobs:
             AWS_DEFAULT_REGION: us-east-1
             AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
             AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
-            BOSH_UUID: {{concourse-bosh-uuid}}
+            BOSH_TARGET: {{concourse-bosh-target}}
+            BOSH_PASSWORD: {{concourse-bosh-password}}
     - put: concourse-deployment
       params:
         manifest: generate-concourse-manifest/manifest.yml
