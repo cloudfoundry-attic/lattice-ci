@@ -131,6 +131,16 @@
       }
     },
 
+    "BOSHSecurityGroupTCPIngress": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "SourceSecurityGroupId": { "Ref": "BOSHSecurityGroup" },
+        "IpProtocol": "tcp",
+        "FromPort": "0",
+        "ToPort": "65535"
+      }
+    },
+
     "BOSHSecurityGroup": {
       "Type": "AWS::EC2::SecurityGroup",
       "Properties": {
@@ -161,12 +171,6 @@
             "IpProtocol": "tcp",
             "FromPort": "25555",
             "ToPort": "25555"
-          },
-          {
-            "SourceSecurityGroupId": { "Ref": "BOSHSecurityGroup" },
-            "IpProtocol": "tcp",
-            "FromPort": "0",
-            "ToPort": "65535"
           },
           {
             "SourceSecurityGroupId": { "Ref": "InternalSecurityGroup" },
