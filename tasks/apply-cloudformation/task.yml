@@ -1,0 +1,12 @@
+---
+platform: linux
+image: docker:///cloudfoundry/lattice-ci
+inputs:
+- name: lattice-ci
+run:
+  path: lattice-ci/tasks/apply-cloudformation/run.sh
+params:
+  CLOUDFORMATION_STACK_NAME: some-stack-name
+  AWS_DEFAULT_REGION: some-aws-region
+  AWS_ACCESS_KEY_ID: some-aws-access-key-id
+  AWS_SECRET_ACCESS_KEY: some-aws-secret-access-key

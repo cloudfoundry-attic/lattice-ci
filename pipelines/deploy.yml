@@ -64,10 +64,24 @@ jobs:
         build: lattice-ci
         push: true
 
-  - name: deploy-bosh
-    serial: true
+  - name: apply-cloudformation
+    serial_groups: [bosh]
     plan:
     - get: lattice-ci
+    - task: apply-cloudformation
+      file: lattice-ci/tasks/apply-cloudformation/task.yml
+      config:
+        params:
+          CLOUDFORMATION_STACK_NAME: bosh-ci
+          AWS_DEFAULT_REGION: us-east-1
+          AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
+          AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
+
+  - name: deploy-bosh
+    serial_groups: [bosh]
+    plan:
+    - get: lattice-ci
+      passed: [apply-cloudformation]
     - task: deploy-bosh
       file: lattice-ci/tasks/deploy-bosh/task.yml
       config:
@@ -79,7 +93,7 @@ jobs:
           BOSH_PRIVATE_KEY: {{concourse-bosh-private-key}}
 
   - name: deploy-concourse
-    serial: true
+    serial_groups: [bosh]
     plan:
     - get: lattice-ci
     - aggregate:
