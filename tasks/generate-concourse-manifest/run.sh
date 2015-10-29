@@ -7,7 +7,7 @@ function get_stack_output() {
   echo "$STACK_INFO" | jq -r "[ .Stacks[0].Outputs[] | { (.OutputKey): .OutputValue } | .$1 ] | add"
 }
 
-SECURITY_GROUP_ID=$(get_stack_output BOSHSecurityGroupID)
+SECURITY_GROUP_ID=$(get_stack_output InternalSecurityGroupID)
 SECURITY_GROUP_NAME=$(aws ec2 describe-security-groups --group-ids=$SECURITY_GROUP_ID | jq -r .SecurityGroups[0].GroupName)
 PRIVATE_SUBNET_ID=$(get_stack_output InternalSubnetID)
 ELB_NAME=$(get_stack_output WebELBLoadBalancerName)
