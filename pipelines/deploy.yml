@@ -72,7 +72,7 @@ jobs:
       file: lattice-ci/tasks/apply-cloudformation/task.yml
       config:
         params:
-          CLOUDFORMATION_STACK_NAME: bosh-ci
+          CLOUDFORMATION_STACK_NAME: concourse
           AWS_DEFAULT_REGION: us-east-1
           AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
           AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
@@ -86,7 +86,7 @@ jobs:
       file: lattice-ci/tasks/deploy-bosh/task.yml
       config:
         params:
-          CLOUDFORMATION_STACK_NAME: bosh-ci
+          CLOUDFORMATION_STACK_NAME: concourse
           AWS_DEFAULT_REGION: us-east-1
           AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
           AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
@@ -107,9 +107,9 @@ jobs:
         file: lattice-ci/tasks/generate-concourse-manifest/task.yml
         config:
           params:
+            CLOUDFORMATION_STACK_NAME: bosh-ci
             CONCOURSE_USERNAME: {{concourse-username}}
             CONCOURSE_PASSWORD: {{concourse-password}}
-            CLOUDFORMATION_STACK_NAME: bosh-ci
             AWS_DEFAULT_REGION: us-east-1
             AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
             AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
