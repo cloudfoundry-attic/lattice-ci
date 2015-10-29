@@ -107,7 +107,7 @@ jobs:
         file: lattice-ci/tasks/generate-concourse-manifest/task.yml
         config:
           params:
-            CLOUDFORMATION_STACK_NAME: bosh-ci
+            CLOUDFORMATION_STACK_NAME: concourse
             CONCOURSE_USERNAME: {{concourse-username}}
             CONCOURSE_PASSWORD: {{concourse-password}}
             AWS_DEFAULT_REGION: us-east-1
