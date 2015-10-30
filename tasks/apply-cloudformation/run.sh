@@ -33,7 +33,7 @@ while true; do
     exit 1
   fi
 
-  if [[ $STATUS = "CREATE_COMPLETE" ]] ; then
+  if [[ $STATUS = "CREATE_COMPLETE" ]] || [[ $STATUS = "UPDATE_COMPLETE" ]]; then
     echo "$STATUS"
     break
   fi
