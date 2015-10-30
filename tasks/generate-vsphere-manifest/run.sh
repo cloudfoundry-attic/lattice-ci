@@ -22,8 +22,6 @@ cp lattice-ci/tasks/generate-concourse-manifest/manifest.yml .
 sed -i "s/BOSH-UUID/$BOSH_UUID/g" manifest.yml
 sed -i "s/CONCOURSE-USERNAME/$CONCOURSE_USERNAME/g" manifest.yml
 sed -i "s/CONCOURSE-PASSWORD/$CONCOURSE_PASSWORD/g" manifest.yml
-sed -i "s/TSA-PRIVATE-KEY/$CONCOURSE_TSA_PRIVATE_KEY/g" manifest.yml
-sed -i "s/TSA-PUBLIC-KEY/$CONCOURSE_TSA_PUBLIC_KEY/g" manifest.yml
 sed -i "s/SECURITY-GROUP-NAME/$SECURITY_GROUP_NAME/g" manifest.yml
 sed -i "s/PRIVATE-SUBNET-ID/$PRIVATE_SUBNET_ID/g" manifest.yml
 sed -i "s/ELB-NAME/$ELB_NAME/g" manifest.yml

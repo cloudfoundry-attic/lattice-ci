@@ -61,10 +61,11 @@ jobs:
         postgresql:
           database: *atc-db-name
           role: *atc-db-role
-
       consul:
         agent:
           servers: {lan: [*discovery_static_ip]}
+      tsa:
+        host_key: TSA-PRIVATE-KEY
 
   - name: db
     instances: 1
@@ -78,7 +79,6 @@ jobs:
       postgresql:
         databases: [{name: *atc-db-name}]
         roles: [*atc-db-role]
-
       consul:
         agent:
           servers: {lan: [*discovery_static_ip]}
@@ -96,10 +96,12 @@ jobs:
       garden:
         listen_network: tcp
         listen_address: 0.0.0.0:7777
-
       consul:
         agent:
           servers: {lan: [*discovery_static_ip]}
+      groundcrew:
+        tsa:
+          host_public_key: TSA-PUBLIC-KEY
 
 disk_pools:
   - name: database

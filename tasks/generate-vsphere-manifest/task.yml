@@ -4,15 +4,16 @@ image: docker:///cloudfoundry/lattice-ci
 inputs:
 - name: lattice-ci
 run:
-  path: lattice-ci/tasks/generate-concourse-manifest/run.sh
+  path: lattice-ci/tasks/generate-vsphere-manifest/run.sh
 params:
   CONCOURSE_USERNAME: some-concourse-username
   CONCOURSE_PASSWORD: some-concourse-password
-  CONCOURSE_TSA_PRIVATE_KEY: some-concourse-tsa-private-key
-  CONCOURSE_TSA_PUBLIC_KEY: some-concourse-tsa-public-key
   CLOUDFORMATION_STACK_NAME: some-stack-name
   AWS_DEFAULT_REGION: some-aws-region
   AWS_ACCESS_KEY_ID: some-aws-access-key-id
   AWS_SECRET_ACCESS_KEY: some-aws-secret-access-key
   BOSH_TARGET: some-bosh-target
   BOSH_PASSWORD: some-bosh-password
+  VCENTER_ADDRESS: some-vcenter-address
+  VCENTER_USER: some-vcenter-user
+  VCENTER_PASSWORD: some-vcenter-password

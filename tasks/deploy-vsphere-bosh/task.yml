@@ -1,0 +1,11 @@
+---
+platform: linux
+image: docker:///cloudfoundry/lattice-ci
+inputs:
+- name: lattice-ci
+run:
+  path: lattice-ci/tasks/deploy-vsphere-bosh/run.sh
+params:
+  VCENTER_ADDRESS: some-vcenter-address
+  VCENTER_USERNAME: some-vcenter-username
+  VCENTER_PASSWORD: some-vcenter-password

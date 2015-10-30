@@ -93,6 +93,18 @@ jobs:
           AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
           BOSH_PRIVATE_KEY: {{concourse-bosh-private-key}}
 
+  - name: deploy-vsphere-bosh
+    serial_groups: [vsphere-bosh]
+    plan:
+    - get: lattice-ci
+    - task: deploy-vsphere-bosh
+      file: lattice-ci/tasks/deploy-vsphere-bosh/task.yml
+      config:
+        params:
+          VCENTER_ADDRESS: {{vcenter-address}}
+          VCENTER_USERNAME: {{vcenter-username}}
+          VCENTER_PASSWORD: {{vcenter-password}}
+
   - name: deploy-concourse
     serial_groups: [bosh]
     plan:
@@ -108,9 +120,11 @@ jobs:
         file: lattice-ci/tasks/generate-concourse-manifest/task.yml
         config:
           params:
-            CLOUDFORMATION_STACK_NAME: concourse
             CONCOURSE_USERNAME: {{concourse-username}}
             CONCOURSE_PASSWORD: {{concourse-password}}
+            CONCOURSE_TSA_PRIVATE_KEY: {{concourse-tsa-private-key}}
+            CONCOURSE_TSA_PUBLIC_KEY: {{concourse-tsa-public-key}}
+            CLOUDFORMATION_STACK_NAME: concourse
             AWS_DEFAULT_REGION: us-east-1
             AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
             AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
