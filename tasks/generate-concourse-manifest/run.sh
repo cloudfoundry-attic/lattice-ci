@@ -17,7 +17,7 @@ SECURITY_GROUP_NAME=$(aws ec2 describe-security-groups --group-ids=$SECURITY_GRO
 PRIVATE_SUBNET_ID=$(get_stack_output InternalSubnetID)
 ELB_NAME=$(get_stack_output WebELBLoadBalancerName)
 
-FORMATTED_CONCOURSE_TSA_PUBLIC_KEY=$(echo -n "$CONCOURSE_TSA_PUBLIC_KEY" | perl -p -e 's/\n/\\n/g')
+FORMATTED_CONCOURSE_TSA_PUBLIC_KEY=$(echo -n "$CONCOURSE_TSA_PUBLIC_KEY" | perl -p -e 's/\n/\\\\n/g')
 
 cp lattice-ci/tasks/generate-concourse-manifest/manifest.yml .
 
