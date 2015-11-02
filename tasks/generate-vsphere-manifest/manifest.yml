@@ -67,7 +67,7 @@ jobs:
 cloud_provider:
   template: {name: cpi, release: bosh-vsphere-cpi}
 
-  mbus: "https://MBUS-USERNAME:MBUS-PASSWORD@10.85.28.5:6868"
+  mbus: "https://mbus:mbus-password@10.85.28.5:6868"
 
   properties:
     vcenter:
@@ -82,6 +82,6 @@ cloud_provider:
         persistent_datastore_pattern: freenas-ds
         disk_path: bloodmyst
         clusters: [pizza-boxes]
-    agent: {mbus: "https://MBUS-USERNAME:MBUS-PASSWORD@0.0.0.0:6868"}
+    agent: {mbus: "https://mbus:mbus-password@0.0.0.0:6868"}
     blobstore: {provider: local, path: /var/vcap/micro_bosh/data/cache}
     ntp: [0.pool.ntp.org, 1.pool.ntp.org]

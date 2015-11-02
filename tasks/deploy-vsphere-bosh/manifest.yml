@@ -13,8 +13,8 @@ resource_pools:
 - name: vms
   network: private
   stemcell:
-    url: https://bosh.io/d/stemcells/bosh-vsphere-esxi-ubuntu-trusty-go_agent?v=2950
-    sha1: 1153bc17fda0755fa8f99a3e360d952362170ac8
+    url: https://bosh.io/d/stemcells/bosh-vsphere-esxi-ubuntu-trusty-go_agent?v=3115
+    sha1: 06e1ec5a54d338c2ed171826ef1bfde905300c32
   cloud_properties:
     cpu: 2
     ram: 4_096
@@ -49,8 +49,7 @@ jobs:
   - {name: blobstore, release: bosh}
   - {name: director, release: bosh}
   - {name: health_monitor, release: bosh}
-  - {name: registry, release: bosh}
-  - {name: aws_cpi, release: bosh-vsphere-cpi}
+  - {name: vsphere_cpi, release: bosh-vsphere-cpi}
 
   resource_pool: vms
   persistent_disk_pool: disks
