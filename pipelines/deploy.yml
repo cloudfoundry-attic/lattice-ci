@@ -166,9 +166,6 @@ jobs:
           params:
             VSPHERE_WORKER_PRIVATE_KEY: {{vsphere-worker-private-key}}
             CONCOURSE_TSA_PUBLIC_KEY: {{concourse-tsa-public-key}}
-            VCENTER_ADDRESS: {{vcenter-address}}
-            VCENTER_USERNAME: {{vcenter-username}}
-            VCENTER_PASSWORD: {{vcenter-password}}
             BOSH_TARGET: {{vsphere-bosh-target}}
             BOSH_PASSWORD: {{vsphere-bosh-password}}
     - put: vsphere-worker-deployment

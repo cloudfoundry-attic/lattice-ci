@@ -8,8 +8,6 @@ releases:
   version: latest
 - name: garden-linux
   version: latest
-- name: bosh-vsphere-cpi
-  version: latest
 
 resource_pools:
 - name: concourse
@@ -19,12 +17,12 @@ resource_pools:
     version: latest
   cloud_properties:
     cpu: 4
-    ram: 8192
-    disk: 64000
+    ram: 8_192
+    disk: 64_000
 
 disk_pools:
 - name: db
-  disk_size: 64000
+  disk_size: 64_000
 
 networks:
 - name: concourse
@@ -48,8 +46,6 @@ jobs:
 
   networks:
   - name: concourse
-    static_ips: [10.85.28.5]
-    default: [dns, gateway]
 
   properties:
     garden:
@@ -66,24 +62,17 @@ jobs:
         host_public_key: TSA-PUBLIC-KEY
         private_key: WORKER-PRIVATE-KEY
 
-cloud_provider:
-  template: {name: cpi, release: bosh-vsphere-cpi}
+compilation:
+  reuse_compilation_vms: true
+  workers: 1
+  network: concourse
+  cloud_properties:
+    cpu: 2
+    ram: 4_096
+    disk: 20_000
 
-  mbus: "https://mbus:mbus-password@10.85.28.5:6868"
-
-  properties:
-    vcenter:
-      address: VCENTER-ADDRESS
-      user: VCENTER-USERNAME
-      password: VCENTER-PASSWORD
-      datacenters:
-        - name: pizza-boxes-dc
-          vm_folder: bloodmyst
-          template_folder: bloodmyst_templates
-          datastore_pattern: freenas-ds
-          persistent_datastore_pattern: freenas-ds
-          disk_path: bloodmyst
-          clusters: [pizza-boxes]
-    agent: {mbus: "https://mbus:mbus-password@0.0.0.0:6868"}
-    blobstore: {provider: local, path: /var/vcap/micro_bosh/data/cache}
-    ntp: [0.pool.ntp.org, 1.pool.ntp.org]
+update:
+  canaries: 1
+  canary_watch_time: 30000-90000
+  update_watch_time: 30000-90000
+  max_in_flight: 1
