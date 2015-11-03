@@ -34,6 +34,10 @@ resources:
     type: bosh-io-stemcell
     source:
       name: bosh-aws-xen-hvm-ubuntu-trusty-go_agent
+  - name: vsphere-stemcell
+    type: bosh-io-stemcell
+    source:
+      name: bosh-vsphere-esxi-ubuntu-trusty-go_agent
   - name: concourse-deployment
     type: bosh-deployment
     source:
@@ -153,7 +157,7 @@ jobs:
     plan:
     - get: lattice-ci
     - aggregate:
-      - get: stemcell
+      - get: vsphere-stemcell
       - get: concourse-release
         params:
           globs:
@@ -176,4 +180,4 @@ jobs:
         - concourse-release/concourse-*.tgz
         - concourse-release/garden-linux-*.tgz
         stemcells:
-        - stemcell/*.tgz
+        - vsphere-stemcell/*.tgz
