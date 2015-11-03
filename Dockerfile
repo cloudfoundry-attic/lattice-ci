@@ -25,7 +25,8 @@ RUN \
   cd /usr/local && \
   (curl -L "https://storage.googleapis.com/golang/go$GO_VERSION.linux-amd64.tar.gz" | tar -xz) && \
   cd go/src && \
-  GOOS=darwin GOARCH=amd64 ./make.bash
+  GOOS=darwin GOARCH=amd64 ./make.bash && \
+  GOOS=windows GOARCH=amd64 ./make.bash \
 
 RUN \
   wget --quiet "https://dl.bintray.com/mitchellh/vagrant/vagrant_${VAGRANT_VERSION}_x86_64.deb" && \
