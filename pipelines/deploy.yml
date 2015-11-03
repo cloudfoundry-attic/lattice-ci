@@ -136,11 +136,11 @@ jobs:
         - stemcell/*.tgz
 
   - name: deploy-vsphere-bosh
-    tags: [vsphere-linux-worker]
     serial_groups: [vsphere-bosh]
     plan:
     - get: lattice-ci
     - task: deploy-vsphere-bosh
+      tags: [vsphere-linux-worker]
       file: lattice-ci/tasks/deploy-vsphere-bosh/task.yml
       config:
         params:
@@ -149,7 +149,6 @@ jobs:
           VCENTER_PASSWORD: {{vcenter-password}}
 
   - name: deploy-vsphere-worker
-    tags: [vsphere-linux-worker]
     serial_groups: [vsphere-bosh]
     plan:
     - get: lattice-ci
@@ -170,6 +169,7 @@ jobs:
             VCENTER_USERNAME: {{vcenter-username}}
             VCENTER_PASSWORD: {{vcenter-password}}
     - put: vsphere-worker-deployment
+      tags: [vsphere-linux-worker]
       params:
         manifest: generate-vsphere-worker-manifest/manifest.yml
         releases:
