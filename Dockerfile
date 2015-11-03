@@ -18,6 +18,7 @@ RUN \
   apt-get -qqy install \
   build-essential ruby2.2 ruby2.2-dev zlib1g-dev python git libssl-dev \
   zip unzip curl wget \
+  virtualbox \
   silversearcher-ag git jq uuid && \
   gem install -q --no-rdoc --no-ri bundler json bosh_cli
 
