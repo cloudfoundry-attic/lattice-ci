@@ -30,4 +30,4 @@ popd >/dev/null
 curl -O "http://receptor.${target}/v1/sync/linux/ltc"
 chmod +x ltc
 
-./ltc test -v -t 10m
+./ltc test -v -t 10m || ./ltc test -v -t 10m

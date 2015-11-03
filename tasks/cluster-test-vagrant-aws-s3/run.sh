@@ -21,4 +21,4 @@ EOF
 
 curl -O "http://receptor.${lattice_target}/v1/sync/linux/ltc"
 chmod +x ltc
-./ltc test -v -t 10m
+./ltc test -v -t 10m || ./ltc test -v -t 10m
