@@ -61,8 +61,8 @@ jobs:
         forward_address: 127.0.0.1:7788
       tsa:
         host: ci.lattice.cf
-        host_public_key: CONCOURSE-TSA-PUBLIC-KEY
-        private_key: LOCAL-WORKER-PRIVATE-KEY
+        host_public_key: TSA-PUBLIC-KEY
+        private_key: VSPHERE-WORKER-PRIVATE-KEY
 
 cloud_provider:
   template: {name: cpi, release: bosh-vsphere-cpi}

@@ -1,0 +1,13 @@
+---
+platform: linux
+image: docker:///cloudfoundry/lattice-ci
+inputs:
+- name: lattice-ci
+run:
+  path: lattice-ci/tasks/generate-vsphere-worker-manifest/run.sh
+params:
+  VSPHERE_WORKER_PRIVATE_KEY: some-vsphere-worker-private-key
+  CONCOURSE_TSA_PUBLIC_KEY: some-concourse-tsa-public-key
+  VCENTER_ADDRESS: some-vcenter-address
+  VCENTER_USER: some-vcenter-user
+  VCENTER_PASSWORD: some-vcenter-password

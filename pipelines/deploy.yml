@@ -41,6 +41,13 @@ resources:
       username: admin
       password: {{concourse-bosh-password}}
       deployment: concourse
+  - name: vsphere-worker-deployment
+    type: bosh-deployment
+    source:
+      target: {{vsphere-bosh-target}}
+      username: admin
+      password: {{vsphere-bosh-password}}
+      deployment: concourse-vsphere
 
 jobs:
   - name: deploy-lattice-website
@@ -93,18 +100,6 @@ jobs:
           AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
           BOSH_PRIVATE_KEY: {{concourse-bosh-private-key}}
 
-  - name: deploy-vsphere-bosh
-    serial_groups: [vsphere-bosh]
-    plan:
-    - get: lattice-ci
-    - task: deploy-vsphere-bosh
-      file: lattice-ci/tasks/deploy-vsphere-bosh/task.yml
-      config:
-        params:
-          VCENTER_ADDRESS: {{vcenter-address}}
-          VCENTER_USERNAME: {{vcenter-username}}
-          VCENTER_PASSWORD: {{vcenter-password}}
-
   - name: deploy-concourse
     serial_groups: [bosh]
     plan:
@@ -124,6 +119,7 @@ jobs:
             CONCOURSE_PASSWORD: {{concourse-password}}
             CONCOURSE_TSA_PRIVATE_KEY: {{concourse-tsa-private-key}}
             CONCOURSE_TSA_PUBLIC_KEY: {{concourse-tsa-public-key}}
+            VSPHERE_WORKER_PUBLIC_KEY: {{vsphere-worker-public-key}}
             CLOUDFORMATION_STACK_NAME: concourse
             AWS_DEFAULT_REGION: us-east-1
             AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
@@ -133,6 +129,49 @@ jobs:
     - put: concourse-deployment
       params:
         manifest: generate-concourse-manifest/manifest.yml
+        releases:
+        - concourse-release/concourse-*.tgz
+        - concourse-release/garden-linux-*.tgz
+        stemcells:
+        - stemcell/*.tgz
+
+  - name: deploy-vsphere-bosh
+    tags: [vsphere-linux-worker]
+    serial_groups: [vsphere-bosh]
+    plan:
+    - get: lattice-ci
+    - task: deploy-vsphere-bosh
+      file: lattice-ci/tasks/deploy-vsphere-bosh/task.yml
+      config:
+        params:
+          VCENTER_ADDRESS: {{vcenter-address}}
+          VCENTER_USERNAME: {{vcenter-username}}
+          VCENTER_PASSWORD: {{vcenter-password}}
+
+  - name: deploy-vsphere-worker
+    tags: [vsphere-linux-worker]
+    serial_groups: [vsphere-bosh]
+    plan:
+    - get: lattice-ci
+    - aggregate:
+      - get: stemcell
+      - get: concourse-release
+        params:
+          globs:
+          - concourse-*.tgz
+          - garden-linux-*.tgz
+      - task: generate-vsphere-worker-manifest
+        file: lattice-ci/tasks/generate-vsphere-worker-manifest/task.yml
+        config:
+          params:
+            VSPHERE_WORKER_PRIVATE_KEY: {{vsphere-worker-private-key}}
+            CONCOURSE_TSA_PUBLIC_KEY: {{concourse-tsa-public-key}}
+            VCENTER_ADDRESS: {{vcenter-address}}
+            VCENTER_USERNAME: {{vcenter-username}}
+            VCENTER_PASSWORD: {{vcenter-password}}
+    - put: vsphere-worker-deployment
+      params:
+        manifest: generate-vsphere-worker-manifest/manifest.yml
         releases:
         - concourse-release/concourse-*.tgz
         - concourse-release/garden-linux-*.tgz

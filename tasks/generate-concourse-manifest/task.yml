@@ -10,6 +10,7 @@ params:
   CONCOURSE_PASSWORD: some-concourse-password
   CONCOURSE_TSA_PRIVATE_KEY: some-concourse-tsa-private-key
   CONCOURSE_TSA_PUBLIC_KEY: some-concourse-tsa-public-key
+  VSPHERE_WORKER_PUBLIC_KEY: some-vsphere-worker-public-key
   CLOUDFORMATION_STACK_NAME: some-stack-name
   AWS_DEFAULT_REGION: some-aws-region
   AWS_ACCESS_KEY_ID: some-aws-access-key-id
