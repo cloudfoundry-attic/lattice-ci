@@ -62,7 +62,7 @@ jobs:
       tsa:
         host: ci.lattice.cf
         host_public_key: TSA-PUBLIC-KEY
-        private_key: VSPHERE-WORKER-PRIVATE-KEY
+        private_key: WORKER-PRIVATE-KEY
 
 cloud_provider:
   template: {name: cpi, release: bosh-vsphere-cpi}
