@@ -8,6 +8,10 @@ eval $(ssh-agent)
 ssh-add github_private_key.pem > /dev/null
 rm github_private_key.pem
 
+curl -LO "http://www.vmware.com/go/tryworkstation-linux-64"
+chmod +x tryworkstation-linux-64
+./tryworkstation-linux-64 --eulas-agreed --required
+
 set -x
 
 current_version=$(cat current-vagrant-box-version/number)
