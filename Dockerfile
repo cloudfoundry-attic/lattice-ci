@@ -18,9 +18,14 @@ RUN \
   apt-get -qqy install \
   build-essential ruby2.2 ruby2.2-dev zlib1g-dev python git libssl-dev \
   zip unzip curl wget \
-  virtualbox \
   silversearcher-ag git jq uuid && \
   gem install -q --no-rdoc --no-ri bundler json bosh_cli
+
+RUN \
+  echo 'deb http://download.virtualbox.org/virtualbox/debian trusty contrib' >> /etc/apt/sources.list
+  wget -q https://www.virtualbox.org/download/oracle_vbox.asc -O- | sudo apt-key add -
+  apt-get update
+  apt-get install virtualbox-5.0
 
 RUN \
   cd /usr/local && \
