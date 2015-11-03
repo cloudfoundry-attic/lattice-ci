@@ -12,4 +12,6 @@ run:
 params:
   ATLAS_TOKEN: some-atlas-token
   GITHUB_SSH_KEY: some-github-ssh-key
+  AWS_ACCESS_KEY_ID: some-aws-access-key-id
+  AWS_SECRET_ACCESS_KEY: some-aws-secret-access-key
   NAMES: some-names

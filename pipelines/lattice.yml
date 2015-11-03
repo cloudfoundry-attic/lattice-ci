@@ -220,31 +220,30 @@ jobs:
       - get: terraform-ami-metadata
     - aggregate:
       - do:
-        - do:
-          - task: build-vagrant-images
-            tags: [vsphere-linux-worker]
-            file: lattice-ci/tasks/build-vagrant-images/task.yml
-            config:
-              params:
-                GITHUB_SSH_KEY: {{github-ssh-key}}
-                AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
-                AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
-                ATLAS_TOKEN: {{atlas-api-token}}
-                NAMES: amazon-ebs,virtualbox-iso,vmware-iso
-          ensure:
-            task: cleanup-incomplete-build-vagrant
-            file: lattice-ci/tasks/cleanup-incomplete-build-vagrant/task.yml
-            config:
-              params:
-                ATLAS_TOKEN: {{atlas-api-token}}
-                PROVIDERS: aws,virtualbox,vmware_desktop
+        - task: build-vagrant-images
+          tags: [vsphere-linux-worker]
+          file: lattice-ci/tasks/build-vagrant-images/task.yml
+          config:
+            params:
+              GITHUB_SSH_KEY: {{github-ssh-key}}
+              AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
+              AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
+              ATLAS_TOKEN: {{atlas-api-token}}
+              NAMES: amazon-ebs,virtualbox-iso,vmware-iso
         - put: vagrant-box-commit
           params:
-            from: /tmp/build/put/build-vagrant-prepare/box-commit-v(.*)
+            from: build-vagrant-images/box-commit-v(.*)
             to: /vagrant/
         - put: vagrant-box-version
           params:
-            file: build-vagrant-prepare/box-version-number
+            file: build-vagrant-images/box-version-number
+        ensure:
+          task: cleanup-incomplete-build-vagrant
+          file: lattice-ci/tasks/cleanup-incomplete-build-vagrant/task.yml
+          config:
+            params:
+              ATLAS_TOKEN: {{atlas-api-token}}
+              PROVIDERS: aws,virtualbox,vmware_desktop
       - do:
         - task: build-terraform-images
           file: lattice-ci/tasks/build-terraform-images/task.yml

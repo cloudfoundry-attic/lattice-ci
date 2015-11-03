@@ -8,6 +8,8 @@ eval $(ssh-agent)
 ssh-add github_private_key.pem > /dev/null
 rm github_private_key.pem
 
+set -x
+
 current_version=$(cat current-vagrant-box-version/number)
 next_version=$(cat next-vagrant-box-version/number)
 current_box_commit=$(cat "vagrant-box-commit/box-commit-v$current_version")
