@@ -22,9 +22,9 @@ RUN \
   gem install -q --no-rdoc --no-ri bundler json bosh_cli
 
 RUN \
-  echo 'deb http://download.virtualbox.org/virtualbox/debian trusty contrib' >> /etc/apt/sources.list
-  wget -q https://www.virtualbox.org/download/oracle_vbox.asc -O- | sudo apt-key add -
-  apt-get update
+  echo 'deb http://download.virtualbox.org/virtualbox/debian trusty contrib' >> /etc/apt/sources.list && \
+  wget -q https://www.virtualbox.org/download/oracle_vbox.asc -O- | apt-key add - && \
+  apt-get update && \
   apt-get install virtualbox-5.0
 
 RUN \
