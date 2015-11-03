@@ -11,3 +11,5 @@ params:
   VCENTER_ADDRESS: some-vcenter-address
   VCENTER_USER: some-vcenter-user
   VCENTER_PASSWORD: some-vcenter-password
+  BOSH_TARGET: some-bosh-target
+  BOSH_PASSWORD: some-bosh-password

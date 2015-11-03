@@ -160,6 +160,7 @@ jobs:
           - concourse-*.tgz
           - garden-linux-*.tgz
       - task: generate-vsphere-worker-manifest
+        tags: [vsphere-linux-worker]
         file: lattice-ci/tasks/generate-vsphere-worker-manifest/task.yml
         config:
           params:
@@ -168,6 +169,8 @@ jobs:
             VCENTER_ADDRESS: {{vcenter-address}}
             VCENTER_USERNAME: {{vcenter-username}}
             VCENTER_PASSWORD: {{vcenter-password}}
+            BOSH_TARGET: {{vsphere-bosh-target}}
+            BOSH_PASSWORD: {{vsphere-bosh-password}}
     - put: vsphere-worker-deployment
       tags: [vsphere-linux-worker]
       params:

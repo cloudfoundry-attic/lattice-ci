@@ -1,6 +1,8 @@
 ---
 name: concourse-vsphere
 
+director_uuid: BOSH-UUID
+
 releases:
 - name: concourse
   version: latest
