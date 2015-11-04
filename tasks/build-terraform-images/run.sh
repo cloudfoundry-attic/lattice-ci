@@ -28,5 +28,3 @@ terraform-image-changes/terraform/build -machine-readable -var "version=$next_ve
 tail -50 build.log | lattice-ci/tasks/build-terraform-images/parse-build-output.rb | jq . > ami-metadata-v${next_version}.tf.json
 echo -n $next_ami_commit > ami-commit-v$next_version
 echo -n $next_version > ami-version-number
-
-rm -rf terraform-image-changes
