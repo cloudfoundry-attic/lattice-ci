@@ -22,12 +22,6 @@ RUN \
   gem install -q --no-rdoc --no-ri bundler json bosh_cli
 
 RUN \
-  echo 'deb http://download.virtualbox.org/virtualbox/debian trusty contrib' >> /etc/apt/sources.list && \
-  wget -q https://www.virtualbox.org/download/oracle_vbox.asc -O- | apt-key add - && \
-  apt-get -qqy update && \
-  apt-get -qqy install virtualbox-5.0
-
-RUN \
   cd /usr/local && \
   (curl -L "https://storage.googleapis.com/golang/go$GO_VERSION.linux-amd64.tar.gz" | tar -xz) && \
   cd go/src && \
