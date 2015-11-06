@@ -20,16 +20,6 @@ resource_pools:
     ram: 8_192
     disk: 64_000
 
-- name: remote-executor
-  network: concourse
-  stemcell:
-    name: bosh-vsphere-esxi-ubuntu-trusty-go_agent
-    version: latest
-  cloud_properties:
-    cpu: 8
-    ram: 32_768
-    disk: 256_000
-
 disk_pools:
 - name: db
   disk_size: 64_000
@@ -71,13 +61,6 @@ jobs:
         host: ci.lattice.cf
         host_public_key: TSA-PUBLIC-KEY
         private_key: WORKER-PRIVATE-KEY
-
-- name: remote-executor
-  instances: 1
-  resource_pool: remote-executor
-
-  networks:
-  - name: concourse
 
 compilation:
   reuse_compilation_vms: true
