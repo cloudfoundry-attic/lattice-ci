@@ -76,10 +76,16 @@ echo $lattice_json | jq '. + '"$post_processor_json" > vagrant-image-changes/vag
 
 ssh-keyscan $REMOTE_EXECUTOR_ADDRESS >> $HOME/.ssh/known_hosts
 remote_path=$(ssh -i remote_executor.pem vcap@$REMOTE_EXECUTOR_ADDRESS mktemp -d /tmp/build-vagrant-images.XXXXXXXX)
+
+function cleanup { ssh -i remote_executor.pem vcap@$REMOTE_EXECUTOR_ADDRESS rm -rf "$remote_path"; }
+trap cleanup EXIT
+
 rsync -a -e "ssh -i remote_executor.pem" vagrant-image-changes vcap@$REMOTE_EXECUTOR_ADDRESS:$remote_path/
 rm -rf vagrant-image-changes || true
 
 ssh -i remote_executor.pem vcap@$REMOTE_EXECUTOR_ADDRESS <<EOF
+  export AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID"
+  export AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY"
   export ATLAS_TOKEN="$ATLAS_TOKEN"
   cd "$remote_path"
   vagrant-image-changes/vagrant/build -var "version=$next_version" -only=$NAMES
