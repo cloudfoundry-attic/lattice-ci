@@ -76,7 +76,7 @@ echo $lattice_json | jq '. + '"$post_processor_json" > vagrant-image-changes/vag
 
 ssh-keyscan $REMOTE_EXECUTOR_ADDRESS >> $HOME/.ssh/known_hosts
 remote_path=$(ssh -i remote_executor.pem vcap@$REMOTE_EXECUTOR_ADDRESS mktemp -d /tmp/build-vagrant-images.XXXXXXXX)
-rsync -a -e "ssh -i remote_executor.pem" vagrant-image-changes pivotal@$REMOTE_EXECUTOR_ADDRESS:$remote_path/
+rsync -a -e "ssh -i remote_executor.pem" vagrant-image-changes vcap@$REMOTE_EXECUTOR_ADDRESS:$remote_path/
 rm -rf vagrant-image-changes || true
 
 ssh -i remote_executor.pem vcap@$REMOTE_EXECUTOR_ADDRESS <<EOF
