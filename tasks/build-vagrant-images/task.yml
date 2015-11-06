@@ -12,6 +12,8 @@ run:
 params:
   ATLAS_TOKEN: some-atlas-token
   GITHUB_SSH_KEY: some-github-ssh-key
+  REMOTE_EXECUTOR_PRIVATE_KEY: some-remote-executor-private-key
+  REMOTE_EXECUTOR_ADDRESS: some-remote-executor-address
   AWS_ACCESS_KEY_ID: some-aws-access-key-id
   AWS_SECRET_ACCESS_KEY: some-aws-secret-access-key
   NAMES: some-names

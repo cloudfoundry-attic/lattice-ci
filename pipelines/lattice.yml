@@ -228,6 +228,8 @@ jobs:
               GITHUB_SSH_KEY: {{github-ssh-key}}
               AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
               AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
+              REMOTE_EXECUTOR_PRIVATE_KEY: {{remote-executor-private-key}}
+              REMOTE_EXECUTOR_ADDRESS: {{remote-executor-address}}
               ATLAS_TOKEN: {{atlas-api-token}}
               NAMES: amazon-ebs,virtualbox-iso,vmware-iso
         - put: vagrant-box-commit

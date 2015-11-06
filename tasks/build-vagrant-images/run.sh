@@ -8,6 +8,9 @@ eval $(ssh-agent)
 ssh-add github_private_key.pem > /dev/null
 rm github_private_key.pem
 
+echo "$REMOTE_EXECUTOR_PRIVATE_KEY" > remote_executor.pem
+chmod 0600 remote_executor.pem
+
 set -x
 
 current_version=$(cat current-vagrant-box-version/number)
@@ -22,10 +25,6 @@ if [[ $current_box_commit == $next_box_commit ]]; then
 fi
 
 git -C vagrant-image-changes submodule update --init --recursive
-
-curl -LO "http://www.vmware.com/go/tryworkstation-linux-64"
-chmod +x tryworkstation-linux-64
-./tryworkstation-linux-64 --eulas-agreed --required
 
 lattice_json=$(cat vagrant-image-changes/vagrant/lattice.json)
 post_processor_json=`
@@ -75,7 +74,16 @@ EOF
 
 echo $lattice_json | jq '. + '"$post_processor_json" > vagrant-image-changes/vagrant/lattice.json
 
-vagrant-image-changes/vagrant/build -var "version=$next_version" -only=$NAMES
+ssh-keyscan $REMOTE_EXECUTOR_ADDRESS >> $HOME/.ssh/known_hosts
+remote_path=$(ssh -i remote_executor.pem vcap@$REMOTE_EXECUTOR_ADDRESS mktemp -d /tmp/build-vagrant-images.XXXXXXXX)
+rsync -a -e "ssh -i remote_executor.pem" vagrant-image-changes pivotal@$REMOTE_EXECUTOR_ADDRESS:$remote_path/
+rm -rf vagrant-image-changes || true
+
+ssh -i remote_executor.pem vcap@$REMOTE_EXECUTOR_ADDRESS <<EOF
+  export ATLAS_TOKEN="$ATLAS_TOKEN"
+  cd "$remote_path"
+  vagrant-image-changes/vagrant/build -var "version=$next_version" -only=$NAMES
+EOF
 
 echo -n $next_box_commit > "box-commit-v$next_version"
 echo -n $next_version > box-version-number
