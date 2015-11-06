@@ -75,8 +75,6 @@ jobs:
 - name: remote-executor
   instances: 1
   resource_pool: remote-executor
-  templates:
-  - {release: concourse, name: baggageclaim}
 
   networks:
   - name: concourse
