@@ -9,6 +9,7 @@ resources:
     source:
       uri: git@github.com:cloudfoundry-incubator/lattice-release.git
       branch: master
+      drafts: true
       private_key: {{github-ssh-key}}
   - name: vagrant-image-changes
     type: git
@@ -40,13 +41,6 @@ resources:
       - cf-routing-release
       - cf-release
       - cf-lattice.yml
-  - name: version-changes
-    type: git
-    source:
-      uri: git@github.com:cloudfoundry-incubator/lattice-release.git
-      branch: master
-      private_key: {{github-ssh-key}}
-      paths: [VERSION]
 
   - name: vagrant-box-version
     type: semver
@@ -130,14 +124,6 @@ resources:
       access_key_id: {{aws-access-key-id}}
       secret_access_key: {{aws-secret-access-key}}
 
-  - name: release-version
-    type: semver
-    source:
-      bucket: lattice
-      key: releases/version
-      access_key_id: {{aws-access-key-id}}
-      secret_access_key: {{aws-secret-access-key}}
-      region_name: us-west-2
   - name: github-release
     type: github-release
     source:
@@ -158,33 +144,6 @@ resources:
       interval: 1h
 
 jobs:
-  - name: tag-release
-    serial: true
-    plan:
-    - aggregate:
-      - get: lattice-ci
-      - get: lattice-release
-        trigger: true
-        params:
-          submodules: none
-      - get: version-changes
-        params:
-          submodules: none
-      - get: vagrant-image-changes
-        params:
-          submodules: none
-      - get: terraform-image-changes
-        params:
-          submodules: none
-      - get: github-release
-        params:
-          globs: [""]
-    - task: tag-release
-      file: lattice-ci/tasks/tag-release/task.yml
-      config:
-        params:
-          GITHUB_SSH_KEY: {{github-ssh-key}}
-
   - name: build-images
     serial: true
     plan:
@@ -192,15 +151,12 @@ jobs:
       - get: lattice-ci
       - get: lattice-release
         trigger: true
-        passed: [tag-release]
         params:
           submodules: none
       - get: vagrant-image-changes
-        passed: [tag-release]
         params:
           submodules: none
       - get: terraform-image-changes
-        passed: [tag-release]
         params:
           submodules: none
       - get: vagrant-box-commit
@@ -487,53 +443,26 @@ jobs:
           AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
           AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
 
-  - name: check-for-release
-    plan:
-    - aggregate:
-      - get: lattice-ci
-      - get: lattice-release
-        trigger: true
-        passed:
-        - cluster-test-vagrant-aws
-        - cluster-test-terraform-aws
-        params:
-          submodules: none
-      - get: lattice-bundle-ci
-        passed:
-        - cluster-test-vagrant-aws
-        - cluster-test-terraform-aws
-    - task: build-release-version
-      file: lattice-ci/tasks/build-release-version/task.yml
-    - put: release-version
-      params:
-        file: build-release-version/release-version
-
   - name: publish-release
     plan:
     - aggregate:
       - get: lattice-ci
-      - get: release-version
-        trigger: true
-        passed: [check-for-release]
       - get: lattice-release
-        passed: [check-for-release]
         params:
           submodules: none
-      - get: lattice-bundle-ci
-        passed: [check-for-release]
-    - task: build-release-tag
-      file: lattice-ci/tasks/build-release-tag/task.yml
+    - task: build-release
+      file: lattice-ci/tasks/build-release/task.yml
     - aggregate:
       - put: lattice-bundle-release
         params:
-          from: lattice-bundle-ci/lattice-bundle-v(.*).zip
+          from: build-release/lattice-bundle-v(.*).zip
           to: /releases/
       - put: lattice-bundle-release
         params:
-          from: lattice-bundle-ci/lattice-bundle-v(.*).zip
+          from: build-release/lattice-bundle-v(.*).zip
           to: /releases/lattice-bundle-latest.zip
     - put: github-release
       params:
-        name: build-release-tag/release-tag
-        tag: build-release-tag/release-tag
+        name: build-release/release-tag
+        tag: build-release/release-tag
         globs: [lattice-bundle-ci/*.zip]
