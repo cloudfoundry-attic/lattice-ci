@@ -9,7 +9,6 @@ resources:
     source:
       uri: git@github.com:cloudfoundry-incubator/lattice-release.git
       branch: master
-      drafts: true
       private_key: {{github-ssh-key}}
   - name: vagrant-image-changes
     type: git
@@ -83,6 +82,15 @@ resources:
       access_key_id: {{aws-access-key-id}}
       secret_access_key: {{aws-secret-access-key}}
 
+  - name: lattice-tgz-version
+    type: semver
+    source:
+      bucket: lattice
+      key: /lattice-tgz/version
+      access_key_id: {{aws-access-key-id}}
+      secret_access_key: {{aws-secret-access-key}}
+      region_name: us-west-2
+      initial_version: 0.7.0
   - name: lattice-tgz
     type: s3
     source:
@@ -130,6 +138,7 @@ resources:
       user: cloudfoundry-incubator
       repository: lattice-release
       access_token: {{github-api-token}}
+      drafts: true
 
   - name: lattice-tracker
     type: tracker
@@ -282,6 +291,8 @@ jobs:
         - unit-test-ltc
         - test-receptor
         - gofmt
+      - get: lattice-tgz-version
+        params: {bump: minor}
       - get: vagrant-box-version
         passed:
         - unit-test-ltc
@@ -298,6 +309,8 @@ jobs:
       params:
         from: compile-lattice-tgz/lattice-v(.*).tgz
         to: /lattice-tgz/
+    - put: lattice-tgz-version
+      params: {file: lattice-tgz-version/number}
 
   - name: build-bundle
     plan:
@@ -452,6 +465,11 @@ jobs:
           submodules: none
     - task: build-release
       file: lattice-ci/tasks/build-release/task.yml
+      config:
+        params:
+          S3_BUCKET_NAME: lattice
+          AWS_ACCESS_KEY_ID: {{aws-access-key-id}}
+          AWS_SECRET_ACCESS_KEY: {{aws-secret-access-key}}
     - aggregate:
       - put: lattice-bundle-release
         params:
@@ -465,4 +483,4 @@ jobs:
       params:
         name: build-release/release-tag
         tag: build-release/release-tag
-        globs: [lattice-bundle-ci/*.zip]
+        globs: [build-release/lattice-bundle-v*.zip]

@@ -6,4 +6,7 @@ inputs:
 - name: lattice-release
 run:
   path: lattice-ci/tasks/build-release/run.sh
-
+params:
+  AWS_ACCESS_KEY_ID: some-aws-access-key-id
+  AWS_SECRET_ACCESS_KEY: some-aws-secret-access-key
+  S3_BUCKET_NAME: some-s3-bucket-name
