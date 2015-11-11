@@ -3,7 +3,7 @@ FROM ubuntu:14.04.3
 ENV HOME /root
 ENV PATH /usr/local/go/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin
 ENV GOROOT /usr/local/go
-ENV GO_VERSION 1.4.3
+ENV GO_VERSION 1.5.1
 ENV VAGRANT_VERSION 1.7.4
 ENV TERRAFORM_VERSION 0.6.6
 ENV PACKER_VERSION 0.8.6
@@ -23,10 +23,7 @@ RUN \
 
 RUN \
   cd /usr/local && \
-  (curl -L "https://storage.googleapis.com/golang/go$GO_VERSION.linux-amd64.tar.gz" | tar -xz) && \
-  cd go/src && \
-  GOOS=darwin GOARCH=amd64 ./make.bash && \
-  GOOS=windows GOARCH=amd64 ./make.bash
+  (curl -L "https://storage.googleapis.com/golang/go$GO_VERSION.linux-amd64.tar.gz" | tar -xz)
 
 RUN \
   wget --quiet "https://dl.bintray.com/mitchellh/vagrant/vagrant_${VAGRANT_VERSION}_x86_64.deb" && \
