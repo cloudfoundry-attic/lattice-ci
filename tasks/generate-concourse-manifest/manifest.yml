@@ -170,6 +170,9 @@ resource_pools:
     cloud_properties:
       instance_type: m3.large
       availability_zone: *az
+      ephemeral_disk:
+        size: 100000 # in MB
+        type: gp2
 
 compilation:
   workers: 3
