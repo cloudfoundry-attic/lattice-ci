@@ -4,6 +4,7 @@ image: docker:///cloudfoundry/lattice-ci
 inputs:
 - name: lattice-ci
 - name: lattice-release
+- name: lattice-tgz-version
 run:
   path: lattice-ci/tasks/compile-lattice-tgz/run.sh
 
