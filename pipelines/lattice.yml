@@ -24,7 +24,8 @@ resources:
       - garden-linux-release
       - cf-routing-release
       - cf-release
-      - cf-lattice.yml
+      - cf-lattice-release
+      - etcd-release
   - name: terraform-image-changes
     type: git
     source:
@@ -39,7 +40,8 @@ resources:
       - garden-linux-release
       - cf-routing-release
       - cf-release
-      - cf-lattice.yml
+      - cf-lattice-release
+      - etcd-release
 
   - name: vagrant-box-version
     type: semver
