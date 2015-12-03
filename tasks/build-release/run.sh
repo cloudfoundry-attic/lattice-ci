@@ -3,7 +3,7 @@
 set -ex
 
 release_version=$(git -C lattice-release describe --abbrev=0)
-bundle_sha=$(git rev-parse --short "$release_version^{commit}")
+bundle_sha=$(git -C lattice-release rev-parse --short "$release_version^{commit}")
 
 echo -n "$release_version" > release-tag
 
